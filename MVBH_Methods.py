@@ -3,9 +3,60 @@ import bpy
 selected_bones = bpy.context.selected_bones
 
 
+def get_selected_bones():
+    """Get selected bones in a list"""
+    selected_bones = bpy.context.selected_bones
+    return selected_bones
+
+def get_edit_bone_list():
+    """Get selected edit bones and store them in the list edit_bones"""
+    selection = bpy.context.selected_editable_bones
+    edit_bones = []
+    for bone in selection:
+        edit_bones.append(bone)
+    return edit_bones
+
+def get_selected_pose_bones():
+    """Get selected pose bones and store them in the list"""
+    selection = bpy.context.selected_editable_bones
+    pose_bones = []
+    for bone in selection:
+        pose_bones.append(bone)
+    return pose_bones
+
+def set_l_suffix():
+    """Adds .L suffix to selected bones."""
+    for bone in get_selected_bones():
+        bone_name_ending = bone.name[-2:]
+
+        if ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower():
+            print("Bone already has a left side tag")  # display it in UI
+        elif ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower():
+            # display it in UI
+            print("Bone already has a right side tag, changed it to .L")
+            bone.name = bone.name[:-2] + ".L"
+        else:
+            bone.name = bone.name + ".L"
+
+
+def set_r_suffix():
+    """Adds .R suffix to selected bones."""
+    for bone in get_selected_bones():
+        bone_name_ending = bone.name[-3:]
+
+        if ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower():
+            print("Bone already has a right side tag")  # display it in UI
+        elif ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower():
+            # display it in UI
+            print("Bone already has a left side tag, changed it to .R")
+            bone.name = bone.name[:-2] + ".R"
+        else:
+            bone.name = bone.name + ".R"
+
+
 def set_def_bones():
-    """Sets Deform value ON and adds a DEF_ prefix to selected bones"""
-    for bone in selected_bones:
+    """Sets Deform value ON and adds a DEF- prefix to selected bones"""
+    for bone in get_selected_bones():
         if "DEF" not in bone.name:
             # Check if "DEF" is not already in the name of the bone
             # Add "DEF_" Prefix to selected bones.
@@ -14,17 +65,17 @@ def set_def_bones():
         if "DEF" in bone.name:
             bpy
 
-    for bone in selected_bones:
+    for bone in get_selected_bones():
         # Set Deform value ON for selected bones.
         bone.use_deform = True
 
 
 def set_tgt_bones():
-    """Duplicates bones sets Deform value OFF and replaces DEF. suffix to TGT., 
+    """Duplicates bones sets Deform value OFF and replaces DEF suffix to TGT, 
     applies CopyTransform constraints"""
     bpy.ops.armature.duplicate()  # duplicate all bones
 
-    for bone in selected_bones:
+    for bone in get_selected_bones():
         bone_name_ending = bone.name[-4:]
         bone.use_deform = False  # Set Deform value ON for selected bones.
 
@@ -43,48 +94,24 @@ def set_tgt_bones():
                 # Remove redundant numerical endings
                 bone.name = bone.name[:-4]
 
-    for bone in selected_bones:
-        # TODO: add CopyTransfrom constraints
+    for bone in get_selected_bones():
+        # TODO: add CopyTransfrom constraintsg
         pass
 
 
-def set_l_suffix():
-    """Adds .L suffix to selected bones."""
-    for bone in selected_bones:
-        bone_name_ending = bone.name[-2:]
-
-        if ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower():
-            print("Bone already has a left side tag")  # display it in UI
-        elif ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower():
-            # display it in UI
-            print("Bone already has a right side tag, changed it to .L")
-            bone.name = bone.name[:-2] + ".L"
-        else:
-            bone.name = bone.name + ".L"
-
-
-def set_r_suffix():
-    """Adds .R suffix to selected bones."""
-    for bone in selected_bones:
-        bone_name_ending = bone.name[-3:]
-
-        if ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower():
-            print("Bone already has a right side tag")  # display it in UI
-        elif ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower():
-            # display it in UI
-            print("Bone already has a left side tag, changed it to .R")
-            bone.name = bone.name[:-2] + ".R"
-        else:
-            bone.name = bone.name + ".R"
-
+def edit_bones_edit():
+    for bone in get_edit_bone_list():
+        bone.name = "Shit"
 
 # Testing my functions here:
 
 # set_l_suffix()
 # set_r_suffix()
 
-# set_def_bones()
-set_tgt_bones()
+#set_def_bones()
+#set_tgt_bones()
+#get_edit_bone_list()
+#edit_bones_edit()
 
 # TODO:
 
