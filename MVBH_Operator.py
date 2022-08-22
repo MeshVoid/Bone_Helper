@@ -9,3 +9,6 @@ class MV_BoneHelper_OP(bpy.types.Operator):
 
     def execute(self, context):
         return {'FINISHED'}
+
+class MV_BH_Menu(bpy.types.Menu):
+    
