@@ -1,0 +1,7 @@
+## **Initial TODO's for addon:**
+
+- [ ] Write an operator that duplicates and renames the deformation bones with DEF. DEF_ prefixes to TGT. TGT__ and then applies transform constraints to newly created target bones to copy DEF transformation values (also set 'deform' property of TGT bones to False)
+
+- [ ] 
+
+- [ ] 
