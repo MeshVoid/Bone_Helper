@@ -1,6 +1,6 @@
 import bpy
 #from MVBH_Operator import *
-import MVBH_Methods
+#from MVBH_Methods import MVBH_Actions
 
 bl_info = {
     "name" : "MV_BoneHelper",
@@ -17,6 +17,7 @@ bl_info = {
 def register():
     #MV_BoneHelper.register()
     pass
+
 def unregister():
     #MV_BoneHelper.unregister()
     pass
