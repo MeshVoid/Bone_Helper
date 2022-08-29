@@ -1,5 +1,5 @@
 import bpy
-import MVBH_Operator
+from MVBH_Operator import *
 
 class MV_BH_Menu(bpy.types.Menu):
     bl_label = "MV Bone Helper Menu"
@@ -8,7 +8,7 @@ class MV_BH_Menu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Hello world!", icon="WORLD_DATA")
-        layout.operator("armature.mv_bonehelper")
+        layout.operator("MVBH_set_def_bones")
         layout.label(text="DEF Bones", icon="BONE_DATA")
         layout.label(text="DEF->TGT", icon="BONE_DATA")
         

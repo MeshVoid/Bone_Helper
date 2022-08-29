@@ -10,7 +10,7 @@ class MV_BoneHelper(MVBH_Scripts):
 
 class MVBH_DEF_bone(MV_BoneHelper, bpy.types.Operator):
     """Operator to turn selected bones into Deform bones"""
-    bl_idname = "armature.mv_bonehelper"
+    bl_idname = "MVBH_set_def_bones"
     bl_label = "MV_BoneHelper"
 
     def execute(self, context):
