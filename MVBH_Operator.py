@@ -1,8 +1,24 @@
 import bpy
-import MVBH_Actions
+from MVBH_Scripts import MVBH_Scripts
+
+class MV_BoneHelper(MVBH_Scripts):
+    """Main BoneHelper class"""
+    def __init__(self):
+        self.scripts = MVBH_Scripts()
+
+    bl_options = {"REGISTER", "UNDO"}
+
+class MVBH_DEF_bone(MV_BoneHelper, bpy.types.Operator):
+    """Operator to turn selected bones into Deform bones"""
+    bl_idname = "armature.mv_bonehelper"
+    bl_label = "MV_BoneHelper"
+
+    def execute(self, context):
+        self.scripts.set_def_bones()
+        return {'FINISHED'}
 
 class MV_BoneHelper(bpy.types.Operator):
-    """Operator that spawns a menu to help with bone management"""
+    
 
     bl_idname = "armature.mv_bonehelper"
     bl_label = "MV BoneHelper Operator"
@@ -24,3 +40,4 @@ if __name__ == "__main__":
 
     # test call
     bpy.ops.armature.mv_bonehelper()
+    

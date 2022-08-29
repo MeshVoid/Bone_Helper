@@ -1,4 +1,5 @@
 import bpy
+import MVBH_Operator
 
 class MV_BH_Menu(bpy.types.Menu):
     bl_label = "MV Bone Helper Menu"
