@@ -1,21 +1,39 @@
+
+
+
 import bpy
 
 
 class MVBH_Scripts():
-    """Class to run or test all the methods run by the addon"""
+    """Class to run or test all the methods run by the addon. Change these to edit values executed by other functions of the addon. """
 
     def __init__(self):
-        self.def_bone_prefix = "DEF-"
-        self.tgt_bone_prefix = "TGT-"
-        self.mch_bone_prefix = "MCH-"
-        self.ik_bone_prefix = "IK-"
-        self.fk_bone_prefix = "FK-"
-        self.left_side_suffix = "-L"
-        self.right_side_suffix = "-R"
-        self.center_side_suffix = "-C"
+        """Initialization values"""
+        self.def_prefix = "DEF-"
+        self.tgt_prefix = "TGT-"
+        self.ctl_prefix = "CTL-"
+        self.mch_prefix = "MCH-"
+        self.ik_prefix = "IK-"
+        self.fk_prefix = "FK-"
+        self.root_name = "ROOT"
+        
+        self.left_suffix = "-L"
+        self.right_suffix = "-R"
+        self.center_suffix = "-C"
+
+        self.def_prefix_len = len(self.def_prefix)
+        self.tgt_prefix_len = len(self.tgt_prefix)
+        self.ctl_prefix_len = len(self.ctl_prefix)
+        self.mch_prefix_len = len(self.mch_prefix)
+        self.ik_prefix_len = len(self.ik_prefix)
+        self.fk_prefix_len = len(self.fk_prefix)
+
+        self.l_suffix_len = len(self.left_suffix)
+        self.r_suffix_len = len(self.right_suffix)
+        self.c_suffix_len = len(self.center_suffix)
 
 
-#____ actions
+#____ Methods
     # NOTE: remove self. on return value names?
     def get_selected_bone_name(self):
         """Get single selected bone name"""
@@ -53,14 +71,14 @@ class MVBH_Scripts():
     def select_all_def_bones(self):
         """Select all deform bones based on the user's prefix"""
         bpy.ops.object.select_pattern(
-            pattern=self.def_bone_prefix + '*', case_sensitive=True, extend=False)
+            pattern=self.def_prefix + '*', case_sensitive=True, extend=False)
         def_bones = self.get_selected_pose_bones()
         return def_bones
 
     def select_all_tgt_bones(self):
         """Select all traget bones based on the user's prefix"""
         bpy.ops.object.select_pattern(
-            pattern=self.tgt_bone_prefix + '*', case_sensitive=True, extend=False)
+            pattern=self.tgt_prefix + '*', case_sensitive=True, extend=False)
         tgt_bones = self.get_selected_pose_bones()
         return tgt_bones
     
@@ -82,8 +100,8 @@ class MVBH_Scripts():
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
-        self.toggle_mode()
-        bpy.ops.armature.bone_primitive_add(name="ROOT")
+        self.toggle_mode(editmode=True)
+        bpy.ops.armature.bone_primitive_add(self.root_name)
         bpy.ops.transform.rotate(value=1.5708, orient_axis='X', orient_type='GLOBAL', orient_matrix=((4.93038e-32, 1, 2.22045e-16), (2.22045e-16, 4.93038e-32, 1), (1, 2.22045e-16, 4.93038e-32)),
                                  orient_matrix_type='VIEW', mirror=False, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
 
@@ -121,57 +139,57 @@ class MVBH_Scripts():
             i += 1   
 
     def set_left_suffix(self):
-        """Adds self.left_side_suffix to selected bones."""
+        """Adds self.left_suffix to selected bones."""
         self.toggle_mode(editmode=True)
 
         for bone in self.get_selected_bones():
-            bone_name_ending = bone.name[-2:]
+            bone_name_ending = bone.name[-self.l_suffix_len:]
 
             if ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower() or "-l" in bone_name_ending.lower():
                 # display it in UI?
                 print(
-                    f"Bone already had a left side tag, changed it to: {self.left_side_suffix}.")
-                bone.name = bone.name[:-2] + self.left_side_suffix
+                    f"Bone already had a left side tag, changed it to: {self.left_suffix}.")
+                bone.name = bone.name[:-self.l_suffix_len] + self.left_suffix
             elif ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower() or "-r" in bone_name_ending.lower():
                 # display it in UI
                 print(
-                    f"Bone already had a right side tag, changed it to: {self.left_side_suffix}.")
-                bone.name = bone.name[:-2] + self.left_side_suffix
+                    f"Bone already had a right side tag, changed it to: {self.left_suffix}.")
+                bone.name = bone.name[:-self.l_suffix_len] + self.left_suffix
             else:
-                bone.name = bone.name + self.left_side_suffix
+                bone.name = bone.name + self.left_suffix
 
     def set_right_suffix(self):
-        """Adds self.right_side_suffix to selected bones."""
+        """Adds self.right_suffix to selected bones."""
         self.toggle_mode(editmode=True)
 
         for bone in self.get_selected_bones():
-            bone_name_ending = bone.name[-3:]
+            bone_name_ending = bone.name[-self.r_suffix_len:]
 
             if ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower() or "-r" in bone_name_ending.lower():
                 # display it in UI?
                 print(
-                    f"Bone already had a right side tag, changed it to: {self.right_side_suffix}.")
-                bone.name = bone.name[:-2] + self.right_side_suffix
+                    f"Bone already had a right side tag, changed it to: {self.right_suffix}.")
+                bone.name = bone.name[:-self.r_suffix_len] + self.right_suffix
             elif ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower() or "-l" in bone_name_ending.lower():
                 # display it in UI
                 print(
-                    f"Bone already had a left side tag, changed it to: {self.right_side_suffix}.")
-                bone.name = bone.name[:-2] + self.right_side_suffix
+                    f"Bone already had a left side tag, changed it to: {self.right_suffix}.")
+                bone.name = bone.name[:-self.r_suffix_len] + self.right_suffix
             else:
-                bone.name = bone.name + self.right_side_suffix
+                bone.name = bone.name + self.right_suffix
 
     def set_def_bones(self):
         """Set deformation bones to selected bones"""
         self.toggle_mode(editmode=True)
 
-        """Sets Deform value ON and adds a self.def_bone_prefix prefix to selected bones"""
+        """Sets Deform value ON and adds a self.def_prefix prefix to selected bones"""
         for bone in self.get_selected_bones():
-            if self.def_bone_prefix not in bone.name[:4]:
+            if self.def_prefix not in bone.name[:self]:
                 # Check if "DEF" is not already in the name of the bone
                 # Add "DEF_" Prefix to selected bones.
-                new_name = self.def_bone_prefix + bone.name
+                new_name = self.def_prefix + bone.name
                 bone.name = new_name
-            if self.def_bone_prefix in bone.name[:4]:
+            if self.def_prefix in bone.name[:self.def_prefix_len]:
                 print("DEF is already in prefix, editing other attributes")
 
         for bone in self.get_selected_bones():
@@ -191,18 +209,18 @@ class MVBH_Scripts():
             bone_name_ending = bone.name[-4:]
             bone.use_deform = False  # Set Deform value ON for selected bones.
 
-            if self.def_bone_prefix not in bone.name:
-                bone.name = self.tgt_bone_prefix + bone.name  # Add "TGT_" suffix to name
+            if self.def_prefix not in bone.name:
+                bone.name = self.tgt_prefix + bone.name  # Add "TGT_" suffix to name
                 if ".00" in bone_name_ending:
                     # Remove redundant numerical endings
                     bone.name = bone.name[:-4]
 
-            elif self.def_bone_prefix in bone.name:
+            elif self.def_prefix in bone.name:
                 # Check if "DEF" is not already in the name of the bone
                 # Add "TGT_" Prefix to selected bones.
                 # Replace "DEF_" prefix to "TGT"g
                 bone.name = bone.name.replace(
-                    self.def_bone_prefix, self.tgt_bone_prefix)
+                    self.def_prefix, self.tgt_prefix)
                 if ".00" in bone_name_ending:
                     # Remove redundant numerical endings appearing after duplication
                     bone.name = bone.name[:-4]
@@ -238,6 +256,5 @@ scripts.set_def_bones()
 
 # TODO:
 
-# Add CopyTransform constraints to DEF bones TGT to be the target of the constraint bones
 # Add CTRL_ Bones to TGT_Bones
 # Display debug messages in the info panel
