@@ -7,9 +7,65 @@ class MVBH_Scripts():
     def __init__(self):
         self.def_bone_prefix = "DEF-"
         self.tgt_bone_prefix = "TGT-"
+        self.mch_bone_prefix = "MCH-"
+        self.ik_bone_prefix = "IK-"
+        self.fk_bone_prefix = "FK-"
         self.left_side_suffix = "-L"
         self.right_side_suffix = "-R"
         self.center_side_suffix = "-C"
+
+
+#____ actions
+    # NOTE: remove self. on return value names?
+    def get_selected_bone_name(self):
+        """Get single selected bone name"""
+        self.selected_bone = bpy.context.selected_pose_bones[0].name
+        return self.selected_bone
+        
+    def get_selected_bones(self):
+        """Get all selected bones in the viewport"""
+        self.selected_bones = bpy.context.selected_bones
+        return self.selected_bones
+    
+    def get_selected_edit_bones(self):
+        """Get selected edit bones and store them in the list edit_bones[]"""
+        selection = bpy.context.selected_editable_bones
+        self.edit_bones = []
+        for bone in selection:
+            self.edit_bones.append(bone)
+        return self.edit_bones
+
+    def get_selected_pose_bones(self):
+        """Get selected pose bones and store them in the list pose_bones[]"""
+        selection = bpy.context.selected_pose_bones
+        self.pose_bones = []
+        for bone in selection:
+            self.pose_bones.append(bone)
+        return self.pose_bones
+
+    def get_selected_armature(self):
+        """Return the name of a currently selected armature"""
+        self.selected_armature = bpy.context.active_object.name
+        return self.selected_armature
+
+# _________SCRIPTS___________
+
+    def select_all_def_bones(self):
+        """Select all deform bones based on the user's prefix"""
+        bpy.ops.object.select_pattern(
+            pattern=self.def_bone_prefix + '*', case_sensitive=True, extend=False)
+        def_bones = self.get_selected_pose_bones()
+        return def_bones
+
+    def select_all_tgt_bones(self):
+        """Select all traget bones based on the user's prefix"""
+        bpy.ops.object.select_pattern(
+            pattern=self.tgt_bone_prefix + '*', case_sensitive=True, extend=False)
+        tgt_bones = self.get_selected_pose_bones()
+        return tgt_bones
+    
+    def select_bones_list(self):
+        "Select specific bones in the list"
 
     def toggle_mode(self, posemode=False, editmode=False):
         """Toggle to edit mode from other modes or toggle to pose mode from other modes, set args: posemode or editmode to TRUE"""
@@ -33,33 +89,14 @@ class MVBH_Scripts():
 
         bpy.ops.armature.align()
 
-    def get_selected_bones(self):
-        """Get all selected bones in the viewport"""
-        self.selected_bones = bpy.context.selected_bones
-        return self.selected_bones
-
-    def get_selected_edit_bones(self):
-        """Get selected edit bones and store them in the list edit_bones[]"""
-        selection = bpy.context.selected_editable_bones
-        self.edit_bones = []
-        for bone in selection:
-            self.edit_bones.append(bone)
-        return self.edit_bones
-
-    def get_selected_pose_bones(self):
-        """Get selected pose bones and store them in the list pose_bones[]"""
-        selection = bpy.context.selected_pose_bones
-        self.pose_bones = []
-        for bone in selection:
-            self.pose_bones.append(bone)
-        return self.pose_bones
-
-    def get_selected_armature(self):
-        """Return currently selected armature"""
-        self.toggle_mode(editmode=True)
-        bpy.ops.armature.select_all()
-        self.selected_armature = bpy.context.selected_objects[0]
-        return self.selected_armature
+    def make_selected_bone_active(self):
+        """Set selected bone in the viewport to active"""
+        boneToSelect = bpy.data.objects[self.get_selected_armature(
+        )].pose.bones[self.get_selected_bone_name()].bone
+        # Set as active
+        bpy.context.object.data.bones.active = boneToSelect
+        #Select in viewport
+        boneToSelect.select = True
 
     def set_xyz_rotation_mode(self, toggle_editmode=True):
         """Set selected bones rotation mode to 'XYZ' instead of quaternions"""
@@ -68,6 +105,20 @@ class MVBH_Scripts():
             bpy.context.object.pose.bones[bone.name].rotation_mode = 'XYZ'
         if toggle_editmode:
             bpy.ops.object.editmode_toggle()
+
+    def set_copy_transforms_constraint(self, con_bones, con_targets):
+        i = 0
+        for bone in con_bones:
+            bpy.ops.object.select_pattern(
+                pattern=bone.name, case_sensitive=True, extend=False)
+            # set currently selected bone in the viewport active
+
+            self.make_selected_bone_active()
+
+            bpy.ops.pose.constraint_add(type='COPY_TRANSFORMS')
+            bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].target = bpy.data.objects[self.get_selected_armature()]
+            bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].subtarget = con_targets[i].name
+            i += 1   
 
     def set_left_suffix(self):
         """Adds self.left_side_suffix to selected bones."""
@@ -115,12 +166,12 @@ class MVBH_Scripts():
 
         """Sets Deform value ON and adds a self.def_bone_prefix prefix to selected bones"""
         for bone in self.get_selected_bones():
-            if "DEF" not in bone.name[:3]:
+            if self.def_bone_prefix not in bone.name[:4]:
                 # Check if "DEF" is not already in the name of the bone
                 # Add "DEF_" Prefix to selected bones.
                 new_name = self.def_bone_prefix + bone.name
                 bone.name = new_name
-            if "DEF" in bone.name[:3]:
+            if self.def_bone_prefix in bone.name[:4]:
                 print("DEF is already in prefix, editing other attributes")
 
         for bone in self.get_selected_bones():
@@ -140,86 +191,45 @@ class MVBH_Scripts():
             bone_name_ending = bone.name[-4:]
             bone.use_deform = False  # Set Deform value ON for selected bones.
 
-            if "DEF" not in bone.name:
+            if self.def_bone_prefix not in bone.name:
                 bone.name = self.tgt_bone_prefix + bone.name  # Add "TGT_" suffix to name
                 if ".00" in bone_name_ending:
                     # Remove redundant numerical endings
                     bone.name = bone.name[:-4]
 
-            elif "DEF" in bone.name:
+            elif self.def_bone_prefix in bone.name:
                 # Check if "DEF" is not already in the name of the bone
                 # Add "TGT_" Prefix to selected bones.
                 # Replace "DEF_" prefix to "TGT"g
-                bone.name = bone.name.replace("DEF", "TGT")
+                bone.name = bone.name.replace(
+                    self.def_bone_prefix, self.tgt_bone_prefix)
                 if ".00" in bone_name_ending:
                     # Remove redundant numerical endings appearing after duplication
                     bone.name = bone.name[:-4]
 
         self.set_xyz_rotation_mode()
 
-        # bpy.ops.object.posemode_toggle()  # go to pose mode
-        # tgt_bones = self.get_selected_pose_bones()  # store a list of tgt bones
-
-        # TODO: add CopyTransfrom constraints
-        # i = 0
-
-        # for bone in def_bones:
-        #     bpy.ops.pose.constraint_add(type='COPY_TRANSFORMS')
-        #     bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].target = self.get_current_armature(
-        #     )
-
-        #     bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].subtarget = tgt_bones[i].name
-        #     bpy.ops.pose.select_hierarchy(direction='CHILD', extend=True)
-        #     i += 1
-
-        # how to set active bone to set constraint to?
-
     def set_def_tgt_hierarchy(self):
         """Set Deform-Target bone hierarchy with all necessary parameters"""
-    # TODO: add CopyTransfrom constraints
-        # go to pose bone
-        # select pattern by bone.name and assign it to list DEF
-        # select pattern by bone.name and assign it to list TGT
-        # for bone in DEF
-
-        #armature = self.get_selected_armature() # select current armature
-
         self.toggle_mode(posemode=True)
-        # select all DEF bones in the armature and make a list
-        bpy.ops.object.select_pattern(
-            pattern=self.def_bone_prefix + '*', case_sensitive=True, extend=False)
-        def_bones = self.get_selected_pose_bones()
+        def_bones = self.select_all_def_bones()
+        tgt_bones = self.select_all_tgt_bones()
+        self.set_copy_transforms_constraint(def_bones, tgt_bones)
 
-        # select all TGT bones in the armature and make a list
-        bpy.ops.object.select_pattern(
-            pattern=self.tgt_bone_prefix + '*', case_sensitive=True, extend=False)
-        tgt_bones = self.get_selected_pose_bones()
-        print(tgt_bones)
-        i = 0
-        for bone in def_bones:
-            bpy.ops.object.select_pattern(
-                pattern=bone.name, case_sensitive=True, extend=False)
-            bpy.ops.pose.constraint_add(type='COPY_TRANSFORMS')
-            bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].target = self.get_selected_armature()
-            bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].subtarget = tgt_bones[i].name
-            i +=1
+        # TODO: remove parents of selected bones
 
-
-        
-        
 
 
 # Testing my functions here:
 scripts = MVBH_Scripts()
-scripts.set_def_tgt_hierarchy()
+#scripts.set_def_tgt_hierarchy()
 
-# scripts.set_def_bones()
+scripts.set_def_bones()
 # scripts.set_tgt_bones()
 # bpy.ops.armature.select_all(action='SELECT')
 # scripts.set_left_suffix()
 # scripts.set_right_suffix()
 # scripts.add_root_bone()
-
 
 # if __name__ == '__main__':
 #     action = MVBH_Actions()

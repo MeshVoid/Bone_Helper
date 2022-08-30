@@ -7,7 +7,7 @@ bl_info = {
     "author" : "Chingiz Jumagulov aka MeshVoid, meshvoid.com",
     "description" : "",
     "blender" : (3, 2, 2),
-    "version" : (0, 0, 3),
+    "version" : (0, 0, 4),
     "location" : "View3D > Armature Edit Mode > PieMenu",
     "warning" : "",
     "doc_url" : "https://github.com/MeshVoid/Bone_Helper",
