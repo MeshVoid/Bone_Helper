@@ -1,3 +1,5 @@
+# MeshVoid's Bone Helper addon operators
+
 import bpy
 from MVBH_Scripts import MVBH_Scripts
 

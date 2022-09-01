@@ -1,3 +1,4 @@
+# MeshVoid's Bone Helper addon user interface
 import bpy
 from MVBH_Operator import *
 
@@ -7,8 +8,7 @@ class MV_BH_Menu(bpy.types.Menu):
     
     def draw(self, context):
         layout = self.layout
-        layout.label(text="Hello world!", icon="WORLD_DATA")
-        layout.operator("MVBH_set_def_bones")
+        layout.operator("MVBH_set_def_bones", text="Set Deform bones", icon="BONE_DATA")
         layout.label(text="DEF Bones", icon="BONE_DATA")
         layout.label(text="DEF->TGT", icon="BONE_DATA")
         
