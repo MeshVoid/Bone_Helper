@@ -8,6 +8,7 @@ class MVBH_Scripts():
     def __init__(self):
         """Initialization values"""
         self.root_name = "ROOT"
+        self.root_size = 2
 
         self.def_prefix = "DEF-"
         self.tgt_prefix = "TGT-"
@@ -38,10 +39,10 @@ class MVBH_Scripts():
         self.c_suffix_checklist = []
 
         # Layer_management
-        self.root_layer = [0]
-        self.def_layer = [0]
-        self.tgt_layer = [1]
-        self.ctl_layer = [2]
+        self.root_layer = 0
+        self.def_layer = 1
+        self.tgt_layer = 2
+        self.ctl_layer = 3
 
 
 # ____ BONE STORAGE AND SELECTION
@@ -82,17 +83,17 @@ class MVBH_Scripts():
         selected_armature = bpy.context.view_layer.objects.active.name
         return selected_armature
 
-    def select_all_def_bones(self):
+    def select_all_def_bones(self, extend=False):
         """Select all deform bones in the viewport based on the user's prefix"""
         bpy.ops.object.select_pattern(
-            pattern=self.def_prefix + '*', case_sensitive=True, extend=False)
+            pattern=self.def_prefix + '*', case_sensitive=True, extend=extend)
         def_bones = self.get_selected_bones_list()
         return def_bones
 
-    def select_all_tgt_bones(self):
+    def select_all_tgt_bones(self, extend=False):
         """Select all target bones in the viewport based on the user's prefix"""
         bpy.ops.object.select_pattern(
-            pattern=self.tgt_prefix + '*', case_sensitive=True, extend=False)
+            pattern=self.tgt_prefix + '*', case_sensitive=True, extend=extend)
         tgt_bones = self.get_selected_bones_list()
         return tgt_bones
 
@@ -103,12 +104,12 @@ class MVBH_Scripts():
         selected_bones = self.get_selected_bones_list()
         return selected_bones
 
-    def select_bone_by_name(self, bone_name='', deselect=False, extend=False):
+    def select_bone_by_name(self, bone_name='', deselect=False, extend=False, case_sensitive=True):
         "Select specific bone/bones by specifying a name"
         if deselect:
             self.deselect_all_bones()
         bpy.ops.object.select_pattern(
-            pattern=bone_name, case_sensitive=True, extend=extend)
+            pattern=bone_name, case_sensitive=case_sensitive, extend=extend)
         selected_bones = self.get_selected_bones_list()
         return selected_bones
 
@@ -116,7 +117,6 @@ class MVBH_Scripts():
         """Deselect all bones in current armature bone mode"""
         if bpy.context.mode == "POSE":
             bpy.ops.pose.select_all(action='DESELECT')
-            self.toggle_mode(editmode=True)
         elif bpy.context.mode == "EDIT_ARMATURE":
             bpy.ops.armature.select_all(action='DESELECT')
 
@@ -202,7 +202,6 @@ class MVBH_Scripts():
 
     def set_selected_bone_active(self):
         """Set selected bone to active depending on the mode the viewport is in"""
-        # TODO: refactor to set_selected_bone_active ?
         if bpy.context.mode == "POSE":
             boneToSelect = bpy.data.objects[self.get_selected_armature(
             )].pose.bones[self.get_selected_bone_name()].bone
@@ -211,7 +210,7 @@ class MVBH_Scripts():
             #Select in viewport
             boneToSelect.select = True
 
-        if bpy.context.mode == "EDIT_ARMATURE":
+        elif bpy.context.mode == "EDIT_ARMATURE":
             boneToSelect = bpy.data.armatures[self.get_selected_armature(
             )].edit_bones[self.get_selected_bone_name()]
             bpy.data.armatures[self.get_selected_armature(
@@ -241,12 +240,14 @@ class MVBH_Scripts():
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
+        if bpy.context.mode == "POSE":
+            self.toggle_mode(editmode=True)
         self.deselect_all_bones()
         bpy.ops.armature.bone_primitive_add(name=self.root_name)
         self.select_bone_by_name(bone_name=self.root_name)
         self.set_selected_bone_active()
         bpy.context.active_bone.tail[2] = 0
-        bpy.context.active_bone.tail[1] = 2
+        bpy.context.active_bone.tail[1] = self.root_size
         bpy.ops.armature.roll_clear()
         self.set_xyz_rotation_mode()
 
@@ -286,37 +287,30 @@ class MVBH_Scripts():
         tgt_bones = self.select_all_tgt_bones()
         self.set_copy_transforms_constraint(def_bones, tgt_bones)
 
-    def parent_bones_to_root(self, bones=[]):
-        # TODO: Fix and make it work properly!
-        """Parent a list of any bones/bone in edit mode to root bone"""
+    def parent_def_bones_to_root(self):
+        """Clear DEF bones parental relationships and parent them to root"""
         # clear parent
+        self.toggle_mode(editmode=True)
         self.select_all_def_bones()
         bpy.ops.armature.parent_clear(type='CLEAR')
         self.deselect_all_bones()
-        self.select_all_def_bones()
-        self.select_bone_by_name(bone_name=self.root_name, extend = True)
+        #select and parent
+        self.select_bone_by_name(bone_name=self.root_name)
         self.set_selected_bone_active()
-        #bpy.ops.armature.parent_set(type="OFFSET")
+        self.select_all_def_bones(extend=True)
+        bpy.ops.armature.parent_set(type="OFFSET")
 
 
-        # for bone in bones:
+    def parent_selected_bones_to_root(self, selected_bones=[]):
+        """Parent a list of any bones/bone in edit mode to root bone"""
+        # TODO: Finish parenting any 
+        # 3- make sure it is possible to parent any selected bones to ROOT bone
 
-        #     self.select_bone_by_name(bone_name=bone.name, deselect=False, extend=True)
-        #     self.select_bone_by_name(
-        #         bone_name=self.root_name)
-        #     self.set_selected_bone_active()
-        #     bpy.ops.armature.parent_set(type="OFFSET")
-
-    def parent_def_bones_to_root(self):
-        """Clear DEF bones parental relationships and parent them to root"""
         # bpy.ops.armature.clear_parent(type="CLEAR")
-        def_bones = self.select_all_def_bones()
+        
         self.parent_bones_to_root(bones=def_bones)
 
-        # TODO:
-        # 1- remove parental information from  DEF bones
-        # 2- parent DEF bones to ROOT bone
-        # 3- make sure it is possible to parent any selected bones to ROOT bone
+        
 
 # Testing my functions here:
 scripts = MVBH_Scripts()
@@ -328,9 +322,9 @@ scripts = MVBH_Scripts()
 # scripts.add_tgt_bones()
 # scripts.set_def_tgt_hierarchy()
 # scripts.add_root_bone()
-scripts.parent_bones_to_root()
+# scripts.parent_def_bones_to_root()
 
-#scripts.parent_def_bones_to_root()
+#scripts.parent_selected_bones_to_root()
 
 
 # TODO:
