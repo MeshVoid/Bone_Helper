@@ -9,6 +9,10 @@ class MVBH_Scripts():
         """Initialization values"""
         self.root_name = "ROOT"
         self.root_size = 2
+        self.prop_name = "PROPS"
+        self.prop_size = 1
+
+    # NOTE: DEF/TGT/CTL/MCH - Always come before IK/FK
 
         self.def_prefix = "DEF-"
         self.tgt_prefix = "TGT-"
@@ -107,40 +111,39 @@ class MVBH_Scripts():
         elif bpy.context.mode == "EDIT_ARMATURE":
             bpy.ops.armature.select_all(action='DESELECT')
 
-        
-        #TODO: 
-        # 1 - Store and return different types of bones in user selection
-        # 2 - Make sure a constraint (for example, copy transforms constraint
+        # TODO:
+        # - Store and return different types of bones in user selection
+        # - Make sure a constraint (for example, copy transforms constraint
         #     assigns to bones in hierachichal order)
-        # Hierarchy should look like the following:
-        # 
+        # - Hierarchy should look like the following:
+        # NOTE: DONE - TEST IT PROPERLY NOW
+        # TODO:
+        # Bone layer management logic
 
     def get_selected_def_bones(self):
         """Get selected def bones and store all bone values in a list"""
         selected_bones = self.get_selected_bones()
         def_bones = []
         for bone in selected_bones:
-            if self.def_prefix in bone.name:
+            if self.def_prefix in bone.name[:len(self.def_prefix)]:
                 def_bones.append(bone)
         return def_bones
-
 
     def get_selected_tgt_bones(self):
         """Get selected TGT bones and store all bone values in a list(not bone.name)"""
         selected_bones = self.get_selected_bones()
         tgt_bones = []
         for bone in selected_bones:
-            if self.tgt_prefix in bone.name:
+            if self.tgt_prefix in bone.name[:len(self.tgt_prefix)]:
                 tgt_bones.append(bone)
         return tgt_bones
-
 
     def get_selected_ctl_bones(self):
         """Get selected CTL bones and store all bone values in a list(not bone.name)"""
         selected_bones = self.get_selected_bones()
         ctl_bones = []
         for bone in selected_bones:
-            if self.ctl_prefix in bone.name:
+            if self.ctl_prefix in bone.name[:len(self.ctl_prefix)]:
                 ctl_bones.append(bone)
         return ctl_bones
 
@@ -149,7 +152,7 @@ class MVBH_Scripts():
         selected_bones = self.get_selected_bones()
         mch_bones = []
         for bone in selected_bones:
-            if self.mch_prefix in bone.name:
+            if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
                 mch_bones.append(bone)
         return mch_bones
 
@@ -195,10 +198,15 @@ class MVBH_Scripts():
         if toggle_editmode:
             bpy.ops.object.editmode_toggle()
 
-    def set_copy_trasfroms_constraint(self, con_bones, con_targets):
-        pass
+    def move_bones_to_layer(self, bones_to_move, layer_number):
+        """Set bones list to a specified bone layer and assign a layer_name"""
+        for bone in bones_to_move:
+            # TODO: Finish this
+            pass
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
+        """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
+        bones list"""
         i = 0
         for bone in con_bones:
             bpy.ops.object.select_pattern(
@@ -213,22 +221,42 @@ class MVBH_Scripts():
             bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].subtarget = con_targets[i].name
             i += 1
 
+    def set_copy_transforms_hierarchy(self):
+        """Set copy transforms constraints depending on the bone hierarchy selected by user that goes as follows: DEF<-TGT<-MCH/IK/FK<-CTL"""
+        if bpy.context.mode == "EDIT_ARMATURE":
+            self.toggle_mode(posemode=True)
+        def_bones = self.get_selected_def_bones()
+        tgt_bones = self.get_selected_tgt_bones()
+        ctl_bones = self.get_selected_ctl_bones()
+        mch_bones = self.get_selected_mch_bones()
+        ik_bones = self.get_selected_ik_bones()
+        fk_bones = self.get_selected_fk_bones()
+
+        self.set_copy_transforms_constraint(def_bones, tgt_bones)
+        self.set_copy_transforms_constraint(tgt_bones, ctl_bones)
+        self.set_copy_transforms_constraint(tgt_bones, mch_bones)
+        self.set_copy_transforms_constraint(mch_bones, ctl_bones)
+        self.set_copy_transforms_constraints(ik_bones, ctl_bones)
+        self.set_copy_transforms_constraint(fk_bones, ctl_bones)
+
     def set_left_suffix(self):
         """Adds self.left_suffix to selected bones."""
         # TODO: make use of self.l_suffix_checklist
         self.toggle_mode(editmode=True)
 
         for bone in self.get_selected_bones():
-            bone_name_ending = bone.name[-len(self.l_suffix):]
+            bone_name_ending = bone.name[-len(self.left_suffix):]
 
             if ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower() or "-l" in bone_name_ending.lower():
                 # display it in UI?
                 #print(f"Bone already had a left side tag, changed it to: {self.left_suffix}.")
-                bone.name = bone.name[:len(-self.l_suffix)] + self.left_suffix
+                bone.name = bone.name[:len(-self.left_suffix)
+                                      ] + self.left_suffix
             elif ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower() or "-r" in bone_name_ending.lower():
                 # display it in UI
                 #print(f"Bone already had a right side tag, changed it to: {self.left_suffix}.")
-                bone.name = bone.name[:-len(self.l_suffix)] + self.left_suffix
+                bone.name = bone.name[:-
+                                      len(self.left_suffix)] + self.left_suffix
             else:
                 bone.name = bone.name + self.left_suffix
 
@@ -238,17 +266,19 @@ class MVBH_Scripts():
         self.toggle_mode(editmode=True)
 
         for bone in self.get_selected_bones():
-            bone_name_ending = bone.name[-len(self.r_suffix):]
+            bone_name_ending = bone.name[-len(self.right_suffix):]
 
             if ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower() or "-r" in bone_name_ending.lower():
                 # display it in UI?
                 #print(f"Bone already had a right side tag, changed it to: {self.right_suffix}.")
-                bone.name = bone.name[:-len(self.r_suffix)] + self.right_suffix
+                bone.name = bone.name[:-
+                                      len(self.right_suffix)] + self.right_suffix
             elif ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower() or "-l" in bone_name_ending.lower():
                 # display it in UI
                 # print(
                 #     f"Bone already had a left side tag, changed it to: {self.right_suffix}.")
-                bone.name = bone.name[:-len(self.r_suffix)] + self.right_suffix
+                bone.name = bone.name[:-
+                                      len(self.right_suffix)] + self.right_suffix
             else:
                 bone.name = bone.name + self.right_suffix
 
@@ -273,7 +303,7 @@ class MVBH_Scripts():
         """Sets Deform value ON and adds a self.def_prefix prefix to selected bones"""
         # TODO: make use of self.def_prefix_checklist
         self.toggle_mode(editmode=True)
-        
+
         for bone in self.get_selected_bones():
             if self.def_prefix not in bone.name[:len(self.def_prefix)]:
                 # Check if "DEF" is not already in the name of the bone
@@ -285,28 +315,28 @@ class MVBH_Scripts():
             bone.use_deform = True
         self.set_xyz_rotation_mode()
 
-
     def set_ctl_bones(self):
         """Sets Deform value OFF on selected bones and replaces any suffix on the bone
         to CTL-, applies CopyTransform constraints"""
         self.toggle_mode(editmode=True)
-        
-
         for bone in self.get_selected_bones():
-            bone_name_ending = bone.name[-4:] 
-            
+            bone_name_ending = bone.name[-4:]
             if self.ctl_prefix not in bone.name[:len(self.ctl_prefix)]:
                 if self.tgt_prefix in bone.name[:len(self.tgt_prefix)]:
-                    bone.name = bone.name.replace(self.tgt_prefix,self.ctl_prefix)
+                    bone.name = bone.name.replace(
+                        self.tgt_prefix, self.ctl_prefix)
                 if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
-                    bone.name = bone.name.replace(self.mch_prefix,self.ctl_prefix)
-
+                    bone.name = bone.name.replace(
+                        self.mch_prefix, self.ctl_prefix)
             if ".00" in bone_name_ending:
                 bone.name = bone.name[:-4]
-
             bone.use_deform = False
         self.set_xyz_rotation_mode()
 
+    def add_ctl_bones(self):
+        """Add CTL bones by duplicating selected bones in the viewport and replacing group suffix to CTL, apply deform value off, remove redundant numerical ending that is added after duplication"""
+        # TODO: MAKE IT HAPPEN BOI
+        pass
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
@@ -319,7 +349,23 @@ class MVBH_Scripts():
         bpy.context.active_bone.tail[2] = 0
         bpy.context.active_bone.tail[1] = self.root_size
         bpy.ops.armature.roll_clear()
+        bpy.context.active_bone.use_deform = False
         self.set_xyz_rotation_mode()
+
+    def add_prop_bone(self):
+        """Add a property bone to the rig"""
+        # TODO: EDIT THIS TO MAKE IT A PROPER PROP BONE
+        if bpy.context.mode == "POSE":
+            self.toggle_mode(editmode=True)
+        self.deselect_all_bones()
+        bpy.ops.armature.bone_primitive_add(name=self.prop_name)
+        self.select_bone_by_name(bone_name=self.prop_name)
+        self.set_selected_bone_active()
+        bpy.context.active_bone.tail[2] = 0
+        bpy.context.active_bone.tail[1] = self.prop_size
+        bpy.ops.armature.roll_clear()
+        self.set_xyz_rotation_mode()
+        # parent root bone to prop bone
 
     def add_tgt_bones(self):
         """Duplicates bones sets Deform value OFF and replaces DEF suffix to TGT, 
@@ -350,11 +396,6 @@ class MVBH_Scripts():
 
         self.set_xyz_rotation_mode()
 
-
-
-
-
-
     def set_def_tgt_hierarchy(self):
         """Set Deform-Target bone hierarchy with all necessary parameters"""
         self.toggle_mode(posemode=True)
@@ -368,7 +409,7 @@ class MVBH_Scripts():
         self.set_selected_bone_active()
         self.select_all_def_bones(extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
-    
+
     def parent_tgt_bones_to_root(self):
         """Parent all TGT bones to root bone for whatever reason"""
         self.select_bone_by_name(bone_name=self.root_name)
@@ -385,7 +426,6 @@ class MVBH_Scripts():
         for bone in selected_bones:
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
-        
 
 
 # Testing my functions here:
@@ -393,17 +433,14 @@ scripts = MVBH_Scripts()
 
 # scripts.set_def_bones()
 # scripts.set_left_suffix()
-# scripts.set_right_suffix()
+# # scripts.set_right_suffix()
 
 # scripts.add_tgt_bones()
-# scripts.set_def_tgt_hierarchy()
+# # scripts.set_def_tgt_hierarchy()
 # scripts.add_root_bone()
 # scripts.parent_def_bones_to_root()
 
 # scripts.parent_selected_bones_to_root()
 # scripts.set_ctl_bones()
-
-# TODO:
-
-# Add CTRL_ Bones to TGT_Bones
-# Display debug messages in the info panel
+# scripts.set_copy_transforms_hierarchy()
+#
