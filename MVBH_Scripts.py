@@ -27,11 +27,14 @@ class MVBH_Scripts():
         self.r_suffix_checklist = []
         self.c_suffix_checklist = []
 
-        # Layer_management
+        # Layer_management hierarchy
         self.root_layer = 0
         self.def_layer = 1
         self.tgt_layer = 2
         self.ctl_layer = 3
+        self.mch_layer = 4
+        self.ik_layer = 5
+        self.fk_layer = 6
 
 
 # ____ BONE STORAGE AND SELECTION
@@ -113,22 +116,61 @@ class MVBH_Scripts():
         # 
 
     def get_selected_def_bones(self):
-        pass
+        """Get selected def bones and store all bone values in a list"""
+        selected_bones = self.get_selected_bones()
+        def_bones = []
+        for bone in selected_bones:
+            if self.def_prefix in bone.name:
+                def_bones.append(bone)
+        return def_bones
+
 
     def get_selected_tgt_bones(self):
-        pass
+        """Get selected TGT bones and store all bone values in a list(not bone.name)"""
+        selected_bones = self.get_selected_bones()
+        tgt_bones = []
+        for bone in selected_bones:
+            if self.tgt_prefix in bone.name:
+                tgt_bones.append(bone)
+        return tgt_bones
+
 
     def get_selected_ctl_bones(self):
-        pass
+        """Get selected CTL bones and store all bone values in a list(not bone.name)"""
+        selected_bones = self.get_selected_bones()
+        ctl_bones = []
+        for bone in selected_bones:
+            if self.ctl_prefix in bone.name:
+                ctl_bones.append(bone)
+        return ctl_bones
 
     def get_selected_mch_bones(self):
-        pass
+        """Get selected MCH bones and store all bone values in a list(not bone.name)"""
+        selected_bones = self.get_selected_bones()
+        mch_bones = []
+        for bone in selected_bones:
+            if self.mch_prefix in bone.name:
+                mch_bones.append(bone)
+        return mch_bones
 
     def get_selected_ik_bones(self):
-        pass
+        """Get selected IK bones and store all bones values in a list(not bone.name)"""
+        selected_bones = self.get_selected_bones()
+        ik_bones = []
+        for bone in selected_bones:
+            if self.ik_prefix in bone.name:
+                ik_bones.append(bone)
+        return ik_bones
 
     def get_selected_fk_bones(self):
-        pass
+        """Get selected FK bones and store all bones values in a list(not bone.name)"""
+        selected_bones = self.get_selected_bones()
+        fk_bones = []
+        for bone in selected_bones:
+            if self.fk_prefix in bone.name:
+                fk_bones.append(bone)
+        return fk_bones
+
 
 # _________SCRIPTS___________
 
@@ -359,7 +401,7 @@ scripts = MVBH_Scripts()
 # scripts.parent_def_bones_to_root()
 
 # scripts.parent_selected_bones_to_root()
-scripts.set_ctl_bones()
+# scripts.set_ctl_bones()
 
 # TODO:
 
