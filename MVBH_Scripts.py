@@ -57,11 +57,6 @@ class MVBH_Scripts():
             return bone_name
 
     def get_selected_bones(self):
-        """Get all selected bones in armature edit mode"""
-        selected_bones = bpy.context.selected_bones
-        return selected_bones
-
-    def get_selected_bones_list(self):
         """Get selected bones in either pose or edit mode and store them in edit_bones[] or pose_bones[] lists"""
         if bpy.context.mode == "POSE":
             selection = bpy.context.selected_pose_bones
@@ -87,21 +82,21 @@ class MVBH_Scripts():
         """Select all deform bones in the viewport based on the user's prefix"""
         bpy.ops.object.select_pattern(
             pattern=self.def_prefix + '*', case_sensitive=True, extend=extend)
-        def_bones = self.get_selected_bones_list()
+        def_bones = self.get_selected_bones()
         return def_bones
 
     def select_all_tgt_bones(self, extend=False):
         """Select all target bones in the viewport based on the user's prefix"""
         bpy.ops.object.select_pattern(
             pattern=self.tgt_prefix + '*', case_sensitive=True, extend=extend)
-        tgt_bones = self.get_selected_bones_list()
+        tgt_bones = self.get_selected_bones()
         return tgt_bones
 
     def select_all_bones_by_prefix(self, bone_prefix=''):
         "Select specific bone/bones by specifying a certain prefix name"
         bpy.ops.object.select_pattern(
             pattern=bone_prefix + '*', case_sensitive=True, extend=False)
-        selected_bones = self.get_selected_bones_list()
+        selected_bones = self.get_selected_bones()
         return selected_bones
 
     def select_bone_by_name(self, bone_name='', deselect=False, extend=False, case_sensitive=True):
@@ -110,7 +105,7 @@ class MVBH_Scripts():
             self.deselect_all_bones()
         bpy.ops.object.select_pattern(
             pattern=bone_name, case_sensitive=case_sensitive, extend=extend)
-        selected_bones = self.get_selected_bones_list()
+        selected_bones = self.get_selected_bones()
         return selected_bones
 
     def deselect_all_bones(self):
@@ -138,7 +133,7 @@ class MVBH_Scripts():
     def set_xyz_rotation_mode(self, toggle_editmode=True):
         """Set selected bones rotation mode to 'XYZ' instead of quaternions"""
         self.toggle_mode(posemode=True)
-        for bone in self.get_selected_bones_list():
+        for bone in self.get_selected_bones():
             bpy.context.object.pose.bones[bone.name].rotation_mode = 'XYZ'
         if toggle_editmode:
             bpy.ops.object.editmode_toggle()
@@ -168,13 +163,11 @@ class MVBH_Scripts():
 
             if ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower() or "-l" in bone_name_ending.lower():
                 # display it in UI?
-                print(
-                    f"Bone already had a left side tag, changed it to: {self.left_suffix}.")
+                #print(f"Bone already had a left side tag, changed it to: {self.left_suffix}.")
                 bone.name = bone.name[:-self.l_suffix_len] + self.left_suffix
             elif ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower() or "-r" in bone_name_ending.lower():
                 # display it in UI
-                print(
-                    f"Bone already had a right side tag, changed it to: {self.left_suffix}.")
+                #print(f"Bone already had a right side tag, changed it to: {self.left_suffix}.")
                 bone.name = bone.name[:-self.l_suffix_len] + self.left_suffix
             else:
                 bone.name = bone.name + self.left_suffix
@@ -189,13 +182,12 @@ class MVBH_Scripts():
 
             if ".r" in bone_name_ending.lower() or "_r" in bone_name_ending.lower() or "-r" in bone_name_ending.lower():
                 # display it in UI?
-                print(
-                    f"Bone already had a right side tag, changed it to: {self.right_suffix}.")
+                #print(f"Bone already had a right side tag, changed it to: {self.right_suffix}.")
                 bone.name = bone.name[:-self.r_suffix_len] + self.right_suffix
             elif ".l" in bone_name_ending.lower() or "_l" in bone_name_ending.lower() or "-l" in bone_name_ending.lower():
                 # display it in UI
-                print(
-                    f"Bone already had a left side tag, changed it to: {self.right_suffix}.")
+                # print(
+                #     f"Bone already had a left side tag, changed it to: {self.right_suffix}.")
                 bone.name = bone.name[:-self.r_suffix_len] + self.right_suffix
             else:
                 bone.name = bone.name + self.right_suffix
@@ -218,25 +210,32 @@ class MVBH_Scripts():
             boneToSelect.select = True
 
     def set_def_bones(self):
-        """Set deformation bones to selected bones"""
+        """Sets Deform value ON and adds a self.def_prefix prefix to selected bones"""
         # TODO: make use of self.def_prefix_checklist
         self.toggle_mode(editmode=True)
-
-        """Sets Deform value ON and adds a self.def_prefix prefix to selected bones"""
+        
         for bone in self.get_selected_bones():
             if self.def_prefix not in bone.name[:self.def_prefix_len]:
                 # Check if "DEF" is not already in the name of the bone
                 # Add "DEF_" Prefix to selected bones.
                 new_name = self.def_prefix + bone.name
                 bone.name = new_name
-            if self.def_prefix in bone.name[:self.def_prefix_len]:
-                print("DEF is already in prefix, editing other attributes")
+            # if self.def_prefix in bone.name[:self.def_prefix_len]:
+                #print("DEF is already in prefix, editing other attributes")
 
         for bone in self.get_selected_bones():
             # Set Deform value ON for selected bones.
             bone.use_deform = True
 
         self.set_xyz_rotation_mode()
+
+    def set_ctl_bones(self):
+        """Sets Deform value OFF on selected bones and replaces any suffix on the bone
+        to CTL-, applies CopyTransform constraints"""
+        self.toggle_mode(editmode=True)
+        
+
+
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
@@ -258,7 +257,7 @@ class MVBH_Scripts():
 
         bpy.ops.armature.duplicate()  # duplicate all bones
 
-        for bone in self.get_selected_bones_list():
+        for bone in self.get_selected_bones():
             bone_name_ending = bone.name[-4:]
             bone.use_deform = False  # Set Deform value ON for selected bones.
 
@@ -280,6 +279,11 @@ class MVBH_Scripts():
 
         self.set_xyz_rotation_mode()
 
+
+
+
+
+
     def set_def_tgt_hierarchy(self):
         """Set Deform-Target bone hierarchy with all necessary parameters"""
         self.toggle_mode(posemode=True)
@@ -289,28 +293,29 @@ class MVBH_Scripts():
 
     def parent_def_bones_to_root(self):
         """Clear DEF bones parental relationships and parent them to root"""
-        # clear parent
-        self.toggle_mode(editmode=True)
-        self.select_all_def_bones()
-        bpy.ops.armature.parent_clear(type='CLEAR')
-        self.deselect_all_bones()
-        #select and parent
         self.select_bone_by_name(bone_name=self.root_name)
         self.set_selected_bone_active()
         self.select_all_def_bones(extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
+    
+    def parent_tgt_bones_to_root(self):
+        """Parent all TGT bones to root bone for whatever reason"""
+        self.select_bone_by_name(bone_name=self.root_name)
+        self.set_selected_bone_active()
+        self.select_all_tgt_bones(extend=True)
+        bpy.ops.armature.parent_set(type="OFFSET")
 
-
-    def parent_selected_bones_to_root(self, selected_bones=[]):
-        """Parent a list of any bones/bone in edit mode to root bone"""
-        # TODO: Finish parenting any 
-        # 3- make sure it is possible to parent any selected bones to ROOT bone
-
-        # bpy.ops.armature.clear_parent(type="CLEAR")
+    def parent_selected_bones_to_root(self):
+        """Parent any selected bones/bone in edit mode to root bone"""
+        self.toggle_mode(editmode=True)
+        selected_bones = self.get_selected_bones()
+        self.select_bone_by_name(bone_name=self.root_name, deselect=True)
+        self.set_selected_bone_active()
+        for bone in selected_bones:
+            self.select_bone_by_name(bone_name=bone.name, extend=True)
+        bpy.ops.armature.parent_set(type="OFFSET")
         
-        self.parent_bones_to_root(bones=def_bones)
 
-        
 
 # Testing my functions here:
 scripts = MVBH_Scripts()
@@ -324,7 +329,7 @@ scripts = MVBH_Scripts()
 # scripts.add_root_bone()
 # scripts.parent_def_bones_to_root()
 
-#scripts.parent_selected_bones_to_root()
+scripts.parent_selected_bones_to_root()
 
 
 # TODO:
