@@ -1,12 +1,14 @@
 # MeshVoid's Bone Helper addon scripts to be used by operators
 import bpy
 
-
+#TODO: Learn how to show error messages in info view
+#TODO: Finish writing logic when adding and setting bones
+#TODO: Finish writing logic for layer hierarchy
 class MVBH_Scripts():
-    """Class to run or test all the methods run by the addon. Change these to edit values executed by other functions of the addon. """
+    """Class to run or test all the methods run by the addon. Change these to edit values executed by other parts of the addon. """
 
     def __init__(self):
-        """Initialization values"""
+        """Initialization values. Change these properties to modify your naming convention and other parameters."""
         self.root_name = "ROOT"
         self.root_size = 2
         self.prop_name = "PROPS"
@@ -25,12 +27,6 @@ class MVBH_Scripts():
         self.right_suffix = "-R"
         self.center_suffix = "-C"
 
-        self.def_prefix_checklist = [
-            "def-", "def.", "def_", "deform", "d.", "d_", "d-"]
-        self.l_suffix_checklist = []
-        self.r_suffix_checklist = []
-        self.c_suffix_checklist = []
-
         # Layer_management hierarchy
         self.root_layer = 31
         self.def_layer = 0
@@ -40,9 +36,17 @@ class MVBH_Scripts():
         self.ik_layer = 4
         self.fk_layer = 5
 
+        # TODO: decide if I need checklists and should I use that bs
+        self.def_prefix_checklist = [
+            "def-", "def.", "def_", "deform", "d.", "d_", "d-"]
+        self.l_suffix_checklist = []
+        self.r_suffix_checklist = []
+        self.c_suffix_checklist = []
 
-# ____ BONE STORAGE AND SELECTION
-
+# =====================================================================
+#                ***BONE AND SELECTION LISTS***
+#                  METHODS WITH RETURN VALUES
+# =====================================================================
 
     def get_selected_bone_name(self):
         """Get single selected bone name"""
@@ -74,9 +78,9 @@ class MVBH_Scripts():
         # won't require armature to be selected?
         selected_armature = bpy.context.view_layer.objects.active.name
         return selected_armature
-    
+
     def get_all_bone_names(self):
-        """Return full list of names in currently selected armature""" 
+        """Return full list of names in currently selected armature"""
         bones_list = bpy.context.active_object.pose.bones[:]
         for bone in bones_list:
             bones_list.append(bone.name)
@@ -173,9 +177,9 @@ class MVBH_Scripts():
                 fk_bones.append(bone)
         return fk_bones
 
-
-# _________SCRIPTS___________
-
+# =====================================================================
+#                          ***SCRIPTS***
+# =====================================================================
 
     def toggle_mode(self, posemode=False, editmode=False):
         """Toggle to edit mode from other modes or toggle to pose mode from other modes, set args: posemode or editmode to TRUE"""
@@ -198,22 +202,12 @@ class MVBH_Scripts():
         if toggle_editmode:
             bpy.ops.object.editmode_toggle()
 
-    def move_bones_to_layer(self, bones_to_move, layer_number):
-        #TODO: Finish this
+    def move_selected_bones_to_layer(self, layer_number):
         """Set bones list to a specified bone layer and assign a layer_name"""
-        for bone in bpy.context.active_object.pose.bones[:]:
-            if bone.name in bones_to_move:
-                bone.layers[layer_number] = True 
-
-        # for bone in bones_to_move:
-        #     self.set_selected_bone_active()
-        #     bpy.ops.context.object.data.layers[layer_number] = True
-            # for layer in range(32):
-            #     if layer == layer_number:
-                    
-                # else:
-                #     bpy.ops.context.object.data.layers[layer] = False
-                
+        layers_list = [False] * 32
+        layers_list[layer_number] = True # sets proper layer out of 32 values
+        bpy.ops.armature.bone_layers(layers=layers_list) # assign bone to layer
+        bpy.context.object.data.layers[layer_number] = True # make layer visible
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
         """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
@@ -355,9 +349,11 @@ class MVBH_Scripts():
 
             if self.ctl_prefix not in bone.name:
                 if self.tgt_prefix in bone.name[:len(self.tgt_prefix)]:
-                    bone.name = bone.name.replace(self.tgt_prefix, self.ctl_prefix)
+                    bone.name = bone.name.replace(
+                        self.tgt_prefix, self.ctl_prefix)
                 if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
-                    bone.name = bone.name.replace(self.mch_prefix, self.ctl_prefix)
+                    bone.name = bone.name.replace(
+                        self.mch_prefix, self.ctl_prefix)
                 if self.ctl_prefix not in bone.name:
                     bone.name = self.ctl_prefix + bone.name
             if ".00" in bone_name_ending:
@@ -455,7 +451,7 @@ class MVBH_Scripts():
         bpy.ops.armature.parent_set(type="OFFSET")
 
 
-# Testing my functions here:
+# Testing my methods here:
 scripts = MVBH_Scripts()
 
 # scripts.set_def_bones()
@@ -472,5 +468,5 @@ scripts = MVBH_Scripts()
 # scripts.add_ctl_bones()
 # scripts.set_copy_transforms_hierarchy()
 # scripts.add_prop_bone()
-bones_list = scripts.get_selected_bone_name()
-scripts.move_bones_to_layer(bones_to_move=bones_list, layer_number=scripts.root_layer)
+
+scripts.move_selected_bones_to_layer(layer_number=scripts.root_layer)

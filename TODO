@@ -1,0 +1,7 @@
+
+Todo:
+  * Refactor module names, maybe also class names?
+  * Assign layer assignment logic to every set_bonetype method in mvbh_scripts class
+  * Define all operators in operators module
+  * Write logic to show info and error messages in info view and viewport
+  
