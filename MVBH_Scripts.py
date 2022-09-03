@@ -10,7 +10,7 @@ class MVBH_Scripts():
         self.root_name = "ROOT"
         self.root_size = 2
         self.prop_name = "PROPS"
-        self.prop_size = 1
+        self.prop_size = 0.5
 
     # NOTE: DEF/TGT/CTL/MCH - Always come before IK/FK
 
@@ -32,16 +32,17 @@ class MVBH_Scripts():
         self.c_suffix_checklist = []
 
         # Layer_management hierarchy
-        self.root_layer = 0
-        self.def_layer = 1
-        self.tgt_layer = 2
-        self.ctl_layer = 3
-        self.mch_layer = 4
-        self.ik_layer = 5
-        self.fk_layer = 6
+        self.root_layer = 31
+        self.def_layer = 0
+        self.tgt_layer = 1
+        self.ctl_layer = 2
+        self.mch_layer = 3
+        self.ik_layer = 4
+        self.fk_layer = 5
 
 
 # ____ BONE STORAGE AND SELECTION
+
 
     def get_selected_bone_name(self):
         """Get single selected bone name"""
@@ -73,6 +74,13 @@ class MVBH_Scripts():
         # won't require armature to be selected?
         selected_armature = bpy.context.view_layer.objects.active.name
         return selected_armature
+    
+    def get_all_bone_names(self):
+        """Return full list of names in currently selected armature""" 
+        bones_list = bpy.context.active_object.pose.bones[:]
+        for bone in bones_list:
+            bones_list.append(bone.name)
+        return bones_list
 
     def select_all_def_bones(self, extend=False):
         """Select all deform bones in the viewport based on the user's prefix"""
@@ -110,15 +118,6 @@ class MVBH_Scripts():
             bpy.ops.pose.select_all(action='DESELECT')
         elif bpy.context.mode == "EDIT_ARMATURE":
             bpy.ops.armature.select_all(action='DESELECT')
-
-        # TODO:
-        # - Store and return different types of bones in user selection
-        # - Make sure a constraint (for example, copy transforms constraint
-        #     assigns to bones in hierachichal order)
-        # - Hierarchy should look like the following:
-        # NOTE: DONE - TEST IT PROPERLY NOW
-        # TODO:
-        # Bone layer management logic
 
     def get_selected_def_bones(self):
         """Get selected def bones and store all bone values in a list"""
@@ -177,6 +176,7 @@ class MVBH_Scripts():
 
 # _________SCRIPTS___________
 
+
     def toggle_mode(self, posemode=False, editmode=False):
         """Toggle to edit mode from other modes or toggle to pose mode from other modes, set args: posemode or editmode to TRUE"""
         if editmode:
@@ -199,10 +199,21 @@ class MVBH_Scripts():
             bpy.ops.object.editmode_toggle()
 
     def move_bones_to_layer(self, bones_to_move, layer_number):
+        #TODO: Finish this
         """Set bones list to a specified bone layer and assign a layer_name"""
-        for bone in bones_to_move:
-            # TODO: Finish this
-            pass
+        for bone in bpy.context.active_object.pose.bones[:]:
+            if bone.name in bones_to_move:
+                bone.layers[layer_number] = True 
+
+        # for bone in bones_to_move:
+        #     self.set_selected_bone_active()
+        #     bpy.ops.context.object.data.layers[layer_number] = True
+            # for layer in range(32):
+            #     if layer == layer_number:
+                    
+                # else:
+                #     bpy.ops.context.object.data.layers[layer] = False
+                
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
         """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
@@ -328,6 +339,8 @@ class MVBH_Scripts():
                 if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
                     bone.name = bone.name.replace(
                         self.mch_prefix, self.ctl_prefix)
+                if self.ctl_prefix not in bone.name:
+                    bone.name = self.ctl_prefix + bone.name
             if ".00" in bone_name_ending:
                 bone.name = bone.name[:-4]
             bone.use_deform = False
@@ -335,8 +348,22 @@ class MVBH_Scripts():
 
     def add_ctl_bones(self):
         """Add CTL bones by duplicating selected bones in the viewport and replacing group suffix to CTL, apply deform value off, remove redundant numerical ending that is added after duplication"""
-        # TODO: MAKE IT HAPPEN BOI
-        pass
+        self.toggle_mode(editmode=True)
+        bpy.ops.armature.duplicate()
+        for bone in self.get_selected_bones():
+            bone_name_ending = bone.name[-4:]
+
+            if self.ctl_prefix not in bone.name:
+                if self.tgt_prefix in bone.name[:len(self.tgt_prefix)]:
+                    bone.name = bone.name.replace(self.tgt_prefix, self.ctl_prefix)
+                if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
+                    bone.name = bone.name.replace(self.mch_prefix, self.ctl_prefix)
+                if self.ctl_prefix not in bone.name:
+                    bone.name = self.ctl_prefix + bone.name
+            if ".00" in bone_name_ending:
+                bone_name = bone.name[:-4]
+                bone.use_deform = False
+            self.set_xyz_rotation_mode()
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
@@ -354,18 +381,18 @@ class MVBH_Scripts():
 
     def add_prop_bone(self):
         """Add a property bone to the rig"""
-        # TODO: EDIT THIS TO MAKE IT A PROPER PROP BONE
         if bpy.context.mode == "POSE":
             self.toggle_mode(editmode=True)
         self.deselect_all_bones()
         bpy.ops.armature.bone_primitive_add(name=self.prop_name)
         self.select_bone_by_name(bone_name=self.prop_name)
         self.set_selected_bone_active()
-        bpy.context.active_bone.tail[2] = 0
-        bpy.context.active_bone.tail[1] = self.prop_size
+        bpy.context.active_bone.head[2] = 4
+        bpy.context.active_bone.tail[2] = 4.5
+        bpy.context.active_bone.length = self.prop_size
         bpy.ops.armature.roll_clear()
         self.set_xyz_rotation_mode()
-        # parent root bone to prop bone
+        self.parent_selected_bones_to_root()
 
     def add_tgt_bones(self):
         """Duplicates bones sets Deform value OFF and replaces DEF suffix to TGT, 
@@ -442,5 +469,8 @@ scripts = MVBH_Scripts()
 
 # scripts.parent_selected_bones_to_root()
 # scripts.set_ctl_bones()
+# scripts.add_ctl_bones()
 # scripts.set_copy_transforms_hierarchy()
-#
+# scripts.add_prop_bone()
+bones_list = scripts.get_selected_bone_name()
+scripts.move_bones_to_layer(bones_to_move=bones_list, layer_number=scripts.root_layer)

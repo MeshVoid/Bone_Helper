@@ -16,8 +16,7 @@ bl_info = {
 
 def register():
     #MV_BoneHelper.register()
-    pass
-
+    pass 
 def unregister():
     #MV_BoneHelper.unregister()
     pass
