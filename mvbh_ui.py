@@ -1,6 +1,6 @@
 # MeshVoid's Bone Helper addon user interface
 import bpy
-from MVBH_Operator import *
+from mvbh_operators import *
 
 class MV_BH_Menu(bpy.types.Menu):
     bl_label = "MV Bone Helper Menu"

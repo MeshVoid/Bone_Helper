@@ -1,5 +1,6 @@
 # MeshVoid's Bone Helper addon scripts to be used by operators
 import bpy
+from mvbh_info import MVBH_Messages
 
 #TODO: Learn how to show error messages in info view
 #TODO: Finish writing logic when adding and setting bones
@@ -22,27 +23,30 @@ class MVBH_Scripts():
         self.mch_prefix = "MCH-"
         self.ik_prefix = "IK-"
         self.fk_prefix = "FK-"
+        self.twk_prefix = "TWK-"
 
         self.left_suffix = "-L"
         self.right_suffix = "-R"
         self.center_suffix = "-C"
 
         # Layer_management hierarchy
-        self.root_layer = 31
-        self.prop_layer = 30
+        self.root_layer = 0
         self.def_layer = 1
         self.tgt_layer = 2
         self.ctl_layer = 3
         self.mch_layer = 4
-        self.ik_layer = 4
-        self.fk_layer = 5
+        self.ik_layer = 5
+        self.twk_layer = 6
+        self.prop_layer = 7
 
-        # TODO: decide if I need checklists and should I use that bs
-        self.def_prefix_checklist = [
-            "def-", "def.", "def_", "deform", "d.", "d_", "d-"]
-        self.l_suffix_checklist = []
-        self.r_suffix_checklist = []
-        self.c_suffix_checklist = []
+        self.info = MVBH_Messages()
+
+        # # TODO: decide if I need checklists and should I use that bs
+        # self.def_prefix_checklist = [
+        #     "def-", "def.", "def_", "deform", "d.", "d_", "d-"]
+        # self.l_suffix_checklist = []
+        # self.r_suffix_checklist = []
+        # self.c_suffix_checklist = []
 
 # =====================================================================
 #                ***BONE AND SELECTION LISTS***
@@ -209,6 +213,16 @@ class MVBH_Scripts():
         layers_list[layer_number] = True # sets proper layer out of 32 values
         bpy.ops.armature.bone_layers(layers=layers_list) # assign bone to layer
         bpy.context.object.data.layers[layer_number] = True # make layer visible
+    
+    def set_layer_name(self, layer_number, layer_name):
+        """Set layer name matching user defined prefixes by adding new property"""
+        bpy.ops.wm.properties_add(data_path="object.data")
+        bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type='STRING', is_overridable_library=False, description="", subtype='NONE', default_string="Name", eval_string="1.0")
+
+    def auto_assign_layer_to_selection():
+        """Automatically assign selected bone to appropriate layer depending on the bones prefix name"""
+        pass
+
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
         """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
@@ -451,7 +465,6 @@ class MVBH_Scripts():
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
 
-
 # Testing my methods here:
 scripts = MVBH_Scripts()
 
@@ -470,4 +483,5 @@ scripts = MVBH_Scripts()
 # scripts.set_copy_transforms_hierarchy()
 # scripts.add_prop_bone()
 
-scripts.move_selected_bones_to_layer(layer_number=scripts.root_layer)
+# scripts.move_selected_bones_to_layer(layer_number=scripts.root_layer)
+scripts.info.display_err(err_id=0)

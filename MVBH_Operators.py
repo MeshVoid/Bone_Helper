@@ -1,7 +1,7 @@
 # MeshVoid's Bone Helper addon operators
 
 import bpy
-from MVBH_Methods import MVBH_Scripts
+from mvbh_methods import MVBH_Scripts
 #TODO: DEFINE ALL OPERATORS TO BE USED IN ADDON
 
 class MV_BoneHelper(MVBH_Scripts):
