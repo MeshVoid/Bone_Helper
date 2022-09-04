@@ -29,10 +29,11 @@ class MVBH_Scripts():
 
         # Layer_management hierarchy
         self.root_layer = 31
-        self.def_layer = 0
-        self.tgt_layer = 1
-        self.ctl_layer = 2
-        self.mch_layer = 3
+        self.prop_layer = 30
+        self.def_layer = 1
+        self.tgt_layer = 2
+        self.ctl_layer = 3
+        self.mch_layer = 4
         self.ik_layer = 4
         self.fk_layer = 5
 
