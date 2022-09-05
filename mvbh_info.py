@@ -7,9 +7,15 @@ class MVBH_Messages():
         """List of messages and errors to show to user"""
     # id : message
         self.messages = {
-            0: "Successfully created Root bone!", 
-            1: "Successfully assigned Defrorm bone naming convention and properties to selected bones!", 
-            2: "Successfully assigned Target bone naming convention and properties to selected bones!"}
+            0: "Created Root bone!", 
+            1: "Created Properties bone",
+            2: "Assigned Deform bone naming convention and properties to selected bones!", 
+            3: "Assigned Target bone naming convention and properties to selected bones!",
+            4: "Assigned Control bone naming convention and properties to selected bones!",
+            5: "Assigned Mechanism bone naming convention and properties to selected bones!",
+            6: "Parented Deform bones to Root bone!",
+            7: "Parented "
+            }
 
         self.errors = {0: "Nothing is selected in the viewport, please select Armature object"}
     

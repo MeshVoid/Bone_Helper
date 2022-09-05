@@ -215,9 +215,12 @@ class MVBH_Scripts():
         bpy.context.object.data.layers[layer_number] = True # make layer visible
     
     def set_layer_name(self, layer_number, layer_name):
-        """Set layer name matching user defined prefixes by adding new property"""
+        """Set layer name matching user defined prefixes by adding new custom property.
+        This relies on the functionality of Blender Layer Manager"""
         bpy.ops.wm.properties_add(data_path="object.data")
         bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type='STRING', is_overridable_library=False, description="", subtype='NONE', default_string="Name", eval_string="1.0")
+        
+
 
     def auto_assign_layer_to_selection():
         """Automatically assign selected bone to appropriate layer depending on the bones prefix name"""
@@ -470,10 +473,10 @@ scripts = MVBH_Scripts()
 
 # scripts.set_def_bones()
 # scripts.set_left_suffix()
-# # scripts.set_right_suffix()
+# scripts.set_right_suffix()
 
 # scripts.add_tgt_bones()
-# # scripts.set_def_tgt_hierarchy()
+# scripts.set_def_tgt_hierarchy()
 # scripts.add_root_bone()
 # scripts.parent_def_bones_to_root()
 
