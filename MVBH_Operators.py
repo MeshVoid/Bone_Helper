@@ -9,6 +9,7 @@ class MV_BoneHelper(MVBH_Scripts):
     """Main BoneHelper class"""
     def __init__(self):
         self.scripts = MVBH_Scripts()
+        self.info = MVBH_Messages()
 
     bl_options = {"REGISTER", "UNDO"}
 
