@@ -1,6 +1,5 @@
 # MeshVoid's Bone Helper addon user interface
 import bpy
-from mvbh_operators import *
 
 class MV_BH_Menu(bpy.types.Menu):
     bl_label = "MV Bone Helper Menu"
@@ -23,8 +22,8 @@ def register():
 def unregister():
      bpy.utils.unregister_class(MV_BH_Menu)
 
-if __name__ == "__main__":
-     register()
+# if __name__ == "__main__":
+#      register()
      
-    # The menu can also be called from scripts
-     bpy.ops.wm.call_menu(name=MV_BH_Menu.bl_idname)
+#     # The menu can also be called from scripts
+#      bpy.ops.wm.call_menu(name=MV_BH_Menu.bl_idname)

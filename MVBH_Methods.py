@@ -1,6 +1,6 @@
 # MeshVoid's Bone Helper addon scripts to be used by operators
 import bpy
-from mvbh_info import MVBH_Messages
+from . mvbh_info import MVBH_Messages
 
 #TODO: Learn how to show error messages in info view
 #TODO: Finish writing logic when adding and setting bones
@@ -467,24 +467,3 @@ class MVBH_Scripts():
         for bone in selected_bones:
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
-
-# Testing my methods here:
-scripts = MVBH_Scripts()
-
-# scripts.set_def_bones()
-# scripts.set_left_suffix()
-# scripts.set_right_suffix()
-
-# scripts.add_tgt_bones()
-# scripts.set_def_tgt_hierarchy()
-# scripts.add_root_bone()
-# scripts.parent_def_bones_to_root()
-
-# scripts.parent_selected_bones_to_root()
-# scripts.set_ctl_bones()
-# scripts.add_ctl_bones()
-# scripts.set_copy_transforms_hierarchy()
-# scripts.add_prop_bone()
-
-# scripts.move_selected_bones_to_layer(layer_number=scripts.root_layer)
-scripts.info.display_err(err_id=0)
