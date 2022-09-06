@@ -1,29 +1,63 @@
 # MeshVoid's Bone Helper addon user interface
 import bpy
 
-class MV_BH_Menu(bpy.types.Menu):
-    bl_label = "MV Bone Helper Menu"
-    bl_idname = "OBJECT_MT_MV_BoneHelperMenu"
+class MVBH_Main_Menu(bpy.types.Menu):
+    bl_idname = "VIEW3D_MT_MVBH_Main_Menu"
+    bl_label = "MVBH Main Menu"
+    
     
     def draw(self, context):
-        layout = self.layout
-        layout.operator("MVBH_set_def_bones", text="Set Deform bones", icon="BONE_DATA")
-        layout.label(text="DEF Bones", icon="BONE_DATA")
-        layout.label(text="DEF->TGT", icon="BONE_DATA")
-        
-
-def draw_item(self,context):
      layout = self.layout
-     layout.menu(MV_BH_Menu.bl_idname)
+     row = layout.row(align=True)
+     split = layout.split()
+     col = split.column()
+    
+     # use existing memu
+     layout.menu("VIEW3D_MT_MVBH_Def_Menu", icon="BONE_DATA", text="DEF->TGT")
+     layout.menu("VIEW3D_MT_MVBH_Ctl_Menu", icon="BONE_DATA", text="CTL->MCH")
+     layout.menu("VIEW3D_MT_MVBH_Suffix_Menu", icon="BONE_DATA", text="SUFFIX")
 
-def register():
-     bpy.utils.register_class(MV_BH_Menu)
 
-def unregister():
-     bpy.utils.unregister_class(MV_BH_Menu)
 
-# if __name__ == "__main__":
-#      register()
-     
-#     # The menu can also be called from scripts
-#      bpy.ops.wm.call_menu(name=MV_BH_Menu.bl_idname)
+class MVBH_Def_Menu(bpy.types.Menu):
+    bl_idname = "VIEW3D_MT_MVBH_Def_Menu"
+    bl_label = "DEF Bones Sub Menu"
+    
+    
+    def draw(self, context):
+     layout = self.layout
+     row = layout.row(align=True)
+     split = layout.split()
+     col = split.column()
+     layout.operator("mvbh.set_def_bones", text="SET DEF", icon="BONE_DATA") 
+     layout.operator("mvbh.add_tgt_bones", text="ADD TGT", icon="BONE_DATA")
+
+class MVBH_Ctl_Menu(bpy.types.Menu):
+    bl_idname = "VIEW3D_MT_MVBH_Ctl_Menu"
+    bl_label = "CTL Bones Sub Menu"
+    
+    
+    def draw(self, context):
+     layout = self.layout
+     row = layout.row(align=True)
+     split = layout.split()
+     col = split.column()
+     layout.operator("mvbh.add_ctl_bones", text="ADD CTL", icon="BONE_DATA")
+     layout.operator("mvbh.set_ctl_bones", text="SET CTL", icon="BONE_DATA")
+     layout.operator("mvbh.add_tgt_bones", text="ADD TGT", icon="BONE_DATA")
+     layout.operator("mvbh.set_def_bones", text="SET DEF", icon="BONE_DATA")
+
+class MVBH_Suffix_Menu(bpy.types.Menu):
+    bl_idname = "VIEW3D_MT_MVBH_Suffix_Menu"
+    bl_label = "Bones Suffix Menu"
+    
+    
+    def draw(self, context):
+     layout = self.layout
+     row = layout.row(align=True)
+     split = layout.split()
+     col = split.column()
+     layout.operator("mvbh.add_ctl_bones", text="ADD CTL", icon="BONE_DATA")
+     layout.operator("mvbh.set_ctl_bones", text="SET CTL", icon="BONE_DATA")
+     layout.operator("mvbh.add_tgt_bones", text="ADD TGT", icon="BONE_DATA")
+     layout.operator("mvbh.set_def_bones", text="SET DEF", icon="BONE_DATA")  

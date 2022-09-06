@@ -1,101 +1,87 @@
-<<<<<<< HEAD
 # MeshVoid's Bone Helper addon operators
-
 import bpy
-from . mvbh_methods import MVBH_Scripts
-from . mvbh_info import MVBH_Messages
-#TODO: DEFINE ALL OPERATORS TO BE USED IN ADDON
+from .mvbh_methods import MVBH_Scripts
+from .mvbh_info import MVBH_Messages
+# TODO: DEFINE ALL OPERATORS TO BE USED IN ADDON
 
-class MV_BoneHelper(MVBH_Scripts):
-    """Main BoneHelper class"""
+
+class MVBH_Operator():
     def __init__(self):
-        self.scripts = MVBH_Scripts()
-        self.info = MVBH_Messages()
+        self.run_script = MVBH_Scripts()
+        self.show_info = MVBH_Messages()
 
+
+class MVBH_OT_main_menu(bpy.types.Operator):
+    """Display MV Bone Helper Addon's Main Menu"""
+    bl_idname = "mvbh.main_menu"
+    bl_label = "Show Mesh Void Bone helper Bone Menu"
     bl_options = {"REGISTER", "UNDO"}
 
-        # Register operator():
-    def register(self):
-        bpy.utils.register_class(MV_BoneHelper)
-        
-    def unregister(self):
-        bpy.utils.unregister_class(MV_BoneHelper)
-
-
-
-class MVBH_DEF_bone(MV_BoneHelper, bpy.types.Operator):
-    """Turn selected bones into Deform bones and assign necessary properties"""
-    bl_idname = "MVBH_set_def_bones"
-    bl_label = "MV_BoneHelper"
-
     def execute(self, context):
-        self.scripts.set_def_bones()
+        bpy.ops.wm.call_menu(name="VIEW3D_MT_MVBH_Main_Menu")
         return {'FINISHED'}
 
-class MVBH_TGT_bones(MV_BoneHelper, bpy.types.Operator):
-    """Turn selected bones into Target bones and assign necessary properties"""
-    bl_idname = "armature.mv_bonehelper"
-    bl_label = "MV BoneHelper Operator"
 
-    def menu_func(self, context):
-        # add operator to a certain menu currently not used anywhere!
-        self.layout.operator(MV_BoneHelper.bl_idname, text=MV_BoneHelper.bl_label)
+# class MVBH_OT_sub_menu(bpy.types.Operator):
+#     """Show MVBH Sub Menu"""
+#     bl_idname = "mvbh.sub_menu"
+#     bl_label = "Show Mesh Void Bone helper Sub Menu"
+#     bl_options = {"REGISTER", "UNDO"}
+
+#     def execute(self, context):
+#         bpy.ops.wm.call_menu(name="VIEW3D_MT_MVBH_Sub_Menu")
+#         return {'FINISHED'}
 
 
-# if __name__ == "__main__":
-#      register()
-
-#     # test call
-#     bpy.ops.armature.mv_bonehelper()
-    
-=======
-# MeshVoid's Bone Helper addon operators
-
-import bpy
-from . mvbh_methods import MVBH_Scripts
-from . mvbh_info import MVBH_Messages
-#TODO: DEFINE ALL OPERATORS TO BE USED IN ADDON
-
-class MV_BoneHelper(MVBH_Scripts):
-    """Main BoneHelper class"""
-    def __init__(self):
-        self.scripts = MVBH_Scripts()
-        self.info = MVBH_Messages()
-
+class MVBH_OT_set_def_bones(bpy.types.Operator, MVBH_Operator):
+    """Set Deform bone naming convention and properties to selected bones"""
+    bl_idname = "mvbh.set_def_bones"
+    bl_label = "Set Deform bone properties to selected bones in the viewport."
     bl_options = {"REGISTER", "UNDO"}
 
-        # Register operator():
-    def register(self):
-        bpy.utils.register_class(MV_BoneHelper)
-        
-    def unregister(self):
-        bpy.utils.unregister_class(MV_BoneHelper)
-
-
-
-class MVBH_DEF_bone(MV_BoneHelper, bpy.types.Operator):
-    """Turn selected bones into Deform bones and assign necessary properties"""
-    bl_idname = "MVBH_set_def_bones"
-    bl_label = "MV_BoneHelper"
-
     def execute(self, context):
-        self.scripts.set_def_bones()
+        self.run_script.set_def_bones()
+        self.show_info.display_msg(2)
+        self.report({'OPERATOR'}, self.show_info.messages[2])
         return {'FINISHED'}
 
-class MVBH_TGT_bones(MV_BoneHelper, bpy.types.Operator):
-    """Turn selected bones into Target bones and assign necessary properties"""
-    bl_idname = "armature.mv_bonehelper"
-    bl_label = "MV BoneHelper Operator"
 
-    def menu_func(self, context):
-        # add operator to a certain menu currently not used anywhere!
-        self.layout.operator(MV_BoneHelper.bl_idname, text=MV_BoneHelper.bl_label)
+class MVBH_OT_set_ctl_bones(bpy.types.Operator, MVBH_Operator):
+    """Set Control bones to the selected bones"""
+    bl_idname = "mvbh.set_ctl_bones"
+    bl_label = "Set selected bones as Control bones."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.set_ctl_bones()
+        self.show_info.display_msg(4)
+        self.report({'OPERATOR'}, self.show_info.messages[4])
+        return {'FINISHED'}
 
 
-# if __name__ == "__main__":
-#      register()
+class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
+    """Add new Target bones with appropriate properties and naming convention to selected bones"""
+    bl_idname = "mvbh.add_tgt_bones"
+    bl_label = "Add Target bones with appropriate naming convention and properties based on the selection."
+    bl_options = {"REGISTER", "UNDO"}
 
-#     # test call
-#     bpy.ops.armature.mv_bonehelper()
-    
->>>>>>> dd7e3395c1b1f8b4d6516b67256d3d9f164d4e8e
+    def execute(self, context):
+        self.run_script.add_tgt_bones()
+        self.show_info.display_msg(3)
+        self.report({'OPERATOR'}, self.show_info.messages[3])
+
+        return {'FINISHED'}
+
+
+class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
+    """Add Control bones to the selected bones"""
+    bl_idname = "mvbh.add_ctl_bones"
+    bl_label = "Add Control bones and set appropriate naming convention and properties based on the selection."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.add_ctl_bones()
+        self.show_info.display_msg(4)
+        self.report({'OPERATOR'}, self.show_info.messages[4])
+
+        return {'FINISHED'}

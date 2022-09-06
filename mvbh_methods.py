@@ -3,8 +3,9 @@ import bpy
 from . mvbh_info import MVBH_Messages
 
 #TODO: Learn how to show error messages in info view
-#TODO: Finish writing logic when adding and setting bones
+#TODO: Finish writing logic for adding and setting bones
 #TODO: Finish writing logic for layer hierarchy
+
 class MVBH_Scripts():
     """Class to run or test all the methods run by the addon. Change these to edit values executed by other parts of the addon. """
 
