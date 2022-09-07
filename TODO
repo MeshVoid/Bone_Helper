@@ -1,9 +1,9 @@
 
-Todo:
+TODO:
   ✔ * Refactor module names, maybe also class names? @done(22-09-04 22:09)
-  * Assign layer assignment logic to every set_bonetype method in mvbh_scripts class
-  * Figure out how to assign cutom property to the armature and change it's type and name
-  * Define all operators in operators module
+  - Assign layer assignment logic to every set_bonetype method in mvbh_scripts class
+  - Figure out how to assign cutom property to the armature and change it's type and name
+  - Define all operators in operators module
   ✔ * Write logic to show info and error messages in info view and viewport @done(22-09-04 21:44) #partially though no info view yet, but will be
-  * Make sure appropriate methods utilise info messages and inform user
+  ✔ Make sure appropriate methods utilise info messages and inform user @done(22-09-07 23:25)
   
