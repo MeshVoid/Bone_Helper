@@ -1,6 +1,7 @@
 *.gitignore
 __pycache__/
 *.cpython
+*_copy.py
 testscripts*
 MV_BoneHelper.code-workspace
 MVBH_BoneTests.blend

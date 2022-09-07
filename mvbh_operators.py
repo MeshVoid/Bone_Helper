@@ -22,17 +22,6 @@ class MVBH_OT_main_menu(bpy.types.Operator):
         return {'FINISHED'}
 
 
-# class MVBH_OT_sub_menu(bpy.types.Operator):
-#     """Show MVBH Sub Menu"""
-#     bl_idname = "mvbh.sub_menu"
-#     bl_label = "Show Mesh Void Bone helper Sub Menu"
-#     bl_options = {"REGISTER", "UNDO"}
-
-#     def execute(self, context):
-#         bpy.ops.wm.call_menu(name="VIEW3D_MT_MVBH_Sub_Menu")
-#         return {'FINISHED'}
-
-
 class MVBH_OT_set_def_bones(bpy.types.Operator, MVBH_Operator):
     """Set Deform bone naming convention and properties to selected bones"""
     bl_idname = "mvbh.set_def_bones"
@@ -59,6 +48,58 @@ class MVBH_OT_set_ctl_bones(bpy.types.Operator, MVBH_Operator):
         return {'FINISHED'}
 
 
+class MVBH_OT_set_left_suffix(bpy.types.Operator, MVBH_Operator):
+    """Adds Left side suffix to selected bones."""
+    bl_idname = "mvbh.set_left_suffix"
+    bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.set_left_suffix()
+        self.show_info.display_msg(10)
+        self.report({'OPERATOR'}, self.show_info.messages[10])
+        return {'FINISHED'}
+
+
+class MVBH_OT_set_right_suffix(bpy.types.Operator, MVBH_Operator):
+    """Adds Right side suffix to selected bones."""
+    bl_idname = "mvbh.set_right_suffix"
+    bl_label = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.set_right_suffix()
+        self.show_info.display_msg(11)
+        self.report({'OPERATOR'}, self.show_info.messages[11])
+        return {'FINISHED'}
+
+
+class MVBH_OT_add_root_bone(bpy.types.Operator, MVB_Operator):
+    """Add a Root bone to currently selected Armature object."""
+    bl_idname = "mvbh.add_root_bone"
+    bl_label = "Add a Root bone to currently selected Armature object."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.add_root_bone()
+        self.show_info.display_msg(0)
+        self.report({'OPERATOR'}, self.show_info.messages[0])
+        return {'FINISHED'}
+
+
+class MVBH_OT_add_prop_bone(bpy.types.Operator, MVB_Operator):
+    """Add a property bone to the rig"""
+    bl_idname = "mvbh_add_prop_bone"
+    bl_label = "Add a Property bone to currently selected Armature object."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.add_prop_bone()
+        self.show_info.display_msg(1)
+        self.report({"OPERATOR"}, self.show_info.messages[1])
+        return {'FINISHED'}
+
+
 class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
     """Add new Target bones with appropriate properties and naming convention to selected bones"""
     bl_idname = "mvbh.add_tgt_bones"
@@ -69,7 +110,6 @@ class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
         self.run_script.add_tgt_bones()
         self.show_info.display_msg(3)
         self.report({'OPERATOR'}, self.show_info.messages[3])
-
         return {'FINISHED'}
 
 
@@ -83,5 +123,4 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
         self.run_script.add_ctl_bones()
         self.show_info.display_msg(4)
         self.report({'OPERATOR'}, self.show_info.messages[4])
-
         return {'FINISHED'}

@@ -17,6 +17,9 @@ class MVBH_Messages():
             7: "Parented selected bones to Root bone!",
             8: "",
             9: "",
+            10: "Assigned Left side suffix to selected bones",
+            11: "Assigned Right side suffix to selected bones",
+            12: "Assigned Center position suffix to selected bones",
 
             }
 
