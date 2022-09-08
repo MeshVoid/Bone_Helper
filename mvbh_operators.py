@@ -68,6 +68,7 @@ class MVBH_OT_set_right_suffix(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
+        self.run_script.check_for_errors(check_selection=True)
         self.run_script.set_right_suffix()
         self.show_info.display_msg(11)
         self.report({'OPERATOR'}, self.show_info.messages[11])
@@ -81,6 +82,7 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
+        self.run_script.check_for_errors(check_selection=True)
         self.run_script.add_root_bone()
         self.show_info.display_msg(0)
         self.report({'OPERATOR'}, self.show_info.messages[0])
@@ -114,7 +116,7 @@ class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
 
 
 class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
-    """Add Control bones to the selected bones"""
+    """Add new Control bones to the selected bones"""
     bl_idname = "mvbh.add_ctl_bones"
     bl_label = "Add Control bones and set appropriate naming convention and properties based on the selection."
     bl_options = {"REGISTER", "UNDO"}

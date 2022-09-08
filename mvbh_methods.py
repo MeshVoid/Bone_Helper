@@ -382,8 +382,8 @@ class MVBH_Scripts():
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
-        if bpy.context.mode == "POSE":
-            self.toggle_mode(editmode=True)
+
+        self.toggle_mode(editmode=True)
         self.deselect_all_bones()
         bpy.ops.armature.bone_primitive_add(name=self.root_name)
         self.select_bone_by_name(bone_name=self.root_name)
@@ -469,8 +469,12 @@ class MVBH_Scripts():
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
 
-    def check_for_errors(self, mode=False, selection=False):
+    def check_for_errors(self, check_mode=False, check_selection=False):
         """Check if user forgot to select anything or enter edit mode or something"""
         # TODO: Finish it
-        if mode:
-            pass
+        if check_mode:
+            if bpy.context.mode != "POSE" or bpy.context.mode != "EDIT_ARMATURE":
+                self.info.errors(1)
+        if check_selection:
+            if bpy.context.selected_objects is None:
+                self.info.errors(2)

@@ -23,7 +23,12 @@ class MVBH_Messages():
 
             }
 
-        self.errors = {0: "Nothing is selected in the viewport, please select Armature object"}
+        self.errors = {
+            0: "Nothing is selected in the viewport, please select Armature object",
+            1: "Make sure you are in either Edit or Pose armature modes",
+            2: "No object is selected, therefore I cannot proceed",
+        
+        }
     
 
     def display_msg(self, msg_id, title="MeshVoid Bone Helper Notifications", icon='INFO'):
@@ -43,3 +48,5 @@ class MVBH_Messages():
         def draw(self, context):
             self.layout.label(text=text)
         bpy.context.window_manager.popup_menu(draw, title=title, icon=icon)
+        self.report({'OPERATOR'}, self.show_info.messages[text])
+            
