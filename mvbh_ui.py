@@ -70,6 +70,5 @@ class MVBH_Root_Menu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("mvbh_add_root_bone", text="ROOT", icon="BONE_DATA")
-        layout.operator("mvbh_add_prop_bone", text="PROP", icon="BONE_DATA")
-F
+        layout.operator("mvbh.add_root_bone", text="ROOT", icon="BONE_DATA")
+        layout.operator("mvbh.add_prop_bone", text="PROP", icon="BONE_DATA")

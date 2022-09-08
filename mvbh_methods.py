@@ -468,3 +468,9 @@ class MVBH_Scripts():
         for bone in selected_bones:
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
+
+    def check_for_errors(self, mode=False, selection=False):
+        """Check if user forgot to select anything or enter edit mode or something"""
+        # TODO: Finish it
+        if mode:
+            pass
