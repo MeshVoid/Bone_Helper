@@ -2,9 +2,11 @@
 import bpy
 from . mvbh_info import MVBH_Messages
 
-#TODO: Learn how to show error messages in info view
-#TODO: Finish writing logic for adding and setting bones
-#TODO: Finish writing logic for layer hierarchy
+# TODO: Learn how to show error messages in info view
+# TODO: Finish writing logic for adding and setting bones
+# TODO: Finish writing logic for layer hierarchy
+# TODO: Refactor all [:len(suffix.bla_bla_bla)] to endswith() and startswith() <- because of PEP8 compliance
+
 
 class MVBH_Scripts():
     """Class to run or test all the methods run by the addon. Change these to edit values executed by other parts of the addon. """
@@ -211,22 +213,22 @@ class MVBH_Scripts():
     def move_selected_bones_to_layer(self, layer_number):
         """Set bones list to a specified bone layer and assign a layer_name"""
         layers_list = [False] * 32
-        layers_list[layer_number] = True # sets proper layer out of 32 values
-        bpy.ops.armature.bone_layers(layers=layers_list) # assign bone to layer
-        bpy.context.object.data.layers[layer_number] = True # make layer visible
-    
+        layers_list[layer_number] = True  # sets proper layer out of 32 values
+        bpy.ops.armature.bone_layers(
+            layers=layers_list)  # assign bone to layer
+        # make layer visible
+        bpy.context.object.data.layers[layer_number] = True
+
     def set_layer_name(self, layer_number, layer_name):
         """Set layer name matching user defined prefixes by adding new custom property.
         This relies on the functionality of Blender Layer Manager"""
         bpy.ops.wm.properties_add(data_path="object.data")
-        bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type='STRING', is_overridable_library=False, description="", subtype='NONE', default_string="Name", eval_string="1.0")
-        
-
+        bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type='STRING',
+                                   is_overridable_library=False, description="", subtype='NONE', default_string="Name", eval_string="1.0")
 
     def auto_assign_layer_to_selection():
         """Automatically assign selected bone to appropriate layer depending on the bones prefix name"""
         pass
-
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
         """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
@@ -468,13 +470,3 @@ class MVBH_Scripts():
         for bone in selected_bones:
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
-
-    def check_for_errors(self, check_mode=False, check_selection=False):
-        """Check if user forgot to select anything or enter edit mode or something"""
-        # TODO: Finish it
-        if check_mode:
-            if bpy.context.mode != "POSE" or bpy.context.mode != "EDIT_ARMATURE":
-                self.info.errors(1)
-        if check_selection:
-            if bpy.context.selected_objects is None:
-                self.info.errors(2)

@@ -10,6 +10,30 @@ class MVBH_Operator():
         self.run_script = MVBH_Scripts()
         self.show_info = MVBH_Messages()
 
+    def check_for_errors(self,
+                         check_mode=False, check_selection=False,
+                         check_bone_selection=False):
+        """Check if user forgot to select anything or enter edit mode or something"""
+        # TODO: Finish it
+        if check_mode:
+            if bpy.context.mode != "POSE" or bpy.context.mode != "EDIT_ARMATURE":
+                self.show_info.display_err(1)
+                run = False
+                return run
+            elif check_bone_selection:
+                if bpy.context.selected_objects in None:
+                    self.show_info.display_err(0)
+                    run = False
+                    return run
+        elif check_selection:
+            if bpy.context.selected_objects is None:
+                self.show_info.display_err(2)
+                run = False
+                return run
+        else:
+            run = False
+            return run 
+        
 
 class MVBH_OT_main_menu(bpy.types.Operator):
     """Display MV Bone Helper Addon's Main Menu"""
@@ -82,11 +106,13 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        self.run_script.check_for_errors(check_selection=True)
-        self.run_script.add_root_bone()
-        self.show_info.display_msg(0)
-        self.report({'OPERATOR'}, self.show_info.messages[0])
-        return {"FINISHED"}
+        run = False
+        self.check_for_errors(check_selection=True, check_mode=True)
+        if run:
+            self.run_script.add_root_bone()
+            self.show_info.display_msg(0)
+            self.report({'OPERATOR'}, self.show_info.messages[0])
+            return {"FINISHED"}
 
 
 class MVBH_OT_add_prop_bone(bpy.types.Operator, MVBH_Operator):
@@ -118,7 +144,8 @@ class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
 class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
     """Add new Control bones to the selected bones"""
     bl_idname = "mvbh.add_ctl_bones"
-    bl_label = "Add Control bones and set appropriate naming convention and properties based on the selection."
+    bl_label = """Add Control bones and set appropriate naming 
+        convention and properties based on the selection."""
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):

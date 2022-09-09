@@ -20,13 +20,14 @@ class MVBH_Messages():
             10: "Assigned Left side suffix to selected bones",
             11: "Assigned Right side suffix to selected bones",
             12: "Assigned Center position suffix to selected bones",
+            20: "Copy Transforms Constraint hierarchy has been assigned to selected bones",
 
             }
 
         self.errors = {
-            0: "Nothing is selected in the viewport, please select Armature object",
-            1: "Make sure you are in either Edit or Pose armature modes",
-            2: "No object is selected, therefore I cannot proceed",
+            0: "No bones are selected in the viewport, please select some!",
+            1: "Make sure you are in either Edit or Pose armature modes!",
+            2: "No object is selected, therefore I cannot proceed!",
         
         }
     
@@ -48,5 +49,4 @@ class MVBH_Messages():
         def draw(self, context):
             self.layout.label(text=text)
         bpy.context.window_manager.popup_menu(draw, title=title, icon=icon)
-        self.report({'OPERATOR'}, self.show_info.messages[text])
             
