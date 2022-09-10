@@ -1,13 +1,14 @@
 import bpy
-
 from . mvbh_ui import *
 from . mvbh_operators import *
+from . mvbh_info import *
+from . mvbh_settings import *
 
 bl_info = {
     "name": "MeshVoid Bone Helper",
     "author": "Chingiz Jumagulov aka MeshVoid, meshvoid.com",
     "description": "",
-    "blender": (3, 3, 3),
+    "blender": (3, 2, 2),
     "version": (0, 0, 8),
     "location": "View3D > Armature Edit Mode > Custom Menu Popup",
     "support": "COMMUNITY",
@@ -22,6 +23,7 @@ modules = [
     MVBH_Def_Menu, 
     MVBH_Ctl_Menu, 
     MVBH_Suffix_Menu,
+    MVBH_Hierarchy_Menu,
     MVBH_OT_main_menu,
     MVBH_OT_set_def_bones,
     MVBH_OT_add_tgt_bones,
@@ -31,6 +33,7 @@ modules = [
     MVBH_OT_set_ctl_bones,
     MVBH_OT_set_left_suffix,
     MVBH_OT_set_right_suffix,
+    MVBH_OT_set_copy_transforms_hierarchy,
 ]
 
 

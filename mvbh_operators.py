@@ -39,7 +39,7 @@ class MVBH_OT_main_menu(bpy.types.Operator):
 
     def execute(self, context):
         bpy.ops.wm.call_menu(name="VIEW3D_MT_MVBH_Main_Menu")
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 class MVBH_OT_set_def_bones(bpy.types.Operator, MVBH_Operator):
@@ -64,7 +64,7 @@ class MVBH_OT_set_ctl_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.run_script.set_ctl_bones()
         self.show_info.display_msg(4)
-        self.report({'OPERATOR'}, self.show_info.messages[4])
+        self.report({"OPERATOR"}, self.show_info.messages[4])
         return {"FINISHED"}
 
 
@@ -148,3 +148,17 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
         self.show_info.display_msg(4)
         self.report({"OPERATOR"}, self.show_info.messages[4])
         return {"FINISHED"}
+
+
+class MVBH_OT_set_copy_transforms_hierarchy(bpy.types.Operator, MVBH_Operator):
+    """Set copy transforms constraints depending on the bone hierarchy"""
+    bl_idname = "mvbh.set_copy_transforms_hierarchy"
+    bl_label = """Set copy transforms constraints depending on the bone hierarchy selected by user that goes as follows: DEF<-TGT<-MCH/IK/FK<-CTL"""
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.add_ctl_bones()
+        self.show_info.display_msg(20)
+        self.report({"OPERATOR"}, self.show_info.messages[20])
+        return{"FINISHED"}
+    

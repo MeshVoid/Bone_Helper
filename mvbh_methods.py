@@ -97,21 +97,21 @@ class MVBH_Scripts():
     def select_all_def_bones(self, extend=False):
         """Select all deform bones in the viewport based on the user's prefix"""
         bpy.ops.object.select_pattern(
-            pattern=self.def_prefix + '*', case_sensitive=True, extend=extend)
+            pattern=self.def_prefix + "*", case_sensitive=True, extend=extend)
         def_bones = self.get_selected_bones()
         return def_bones
 
     def select_all_tgt_bones(self, extend=False):
         """Select all target bones in the viewport based on the user's prefix"""
         bpy.ops.object.select_pattern(
-            pattern=self.tgt_prefix + '*', case_sensitive=True, extend=extend)
+            pattern=self.tgt_prefix + "*", case_sensitive=True, extend=extend)
         tgt_bones = self.get_selected_bones()
         return tgt_bones
 
     def select_all_bones_by_prefix(self, bone_prefix=''):
         "Select specific bone/bones by specifying a certain prefix name"
         bpy.ops.object.select_pattern(
-            pattern=bone_prefix + '*', case_sensitive=True, extend=False)
+            pattern=bone_prefix + "*", case_sensitive=True, extend=False)
         selected_bones = self.get_selected_bones()
         return selected_bones
 
@@ -127,9 +127,9 @@ class MVBH_Scripts():
     def deselect_all_bones(self):
         """Deselect all bones in current armature bone mode"""
         if bpy.context.mode == "POSE":
-            bpy.ops.pose.select_all(action='DESELECT')
+            bpy.ops.pose.select_all(action="DESELECT")
         elif bpy.context.mode == "EDIT_ARMATURE":
-            bpy.ops.armature.select_all(action='DESELECT')
+            bpy.ops.armature.select_all(action="DESELECT")
 
     def get_selected_def_bones(self):
         """Get selected def bones and store all bone values in a list"""
@@ -206,7 +206,7 @@ class MVBH_Scripts():
         """Set selected bones rotation mode to 'XYZ' instead of quaternions"""
         self.toggle_mode(posemode=True)
         for bone in self.get_selected_bones():
-            bpy.context.object.pose.bones[bone.name].rotation_mode = 'XYZ'
+            bpy.context.object.pose.bones[bone.name].rotation_mode = "XYZ"
         if toggle_editmode:
             bpy.ops.object.editmode_toggle()
 
@@ -223,8 +223,8 @@ class MVBH_Scripts():
         """Set layer name matching user defined prefixes by adding new custom property.
         This relies on the functionality of Blender Layer Manager"""
         bpy.ops.wm.properties_add(data_path="object.data")
-        bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type='STRING',
-                                   is_overridable_library=False, description="", subtype='NONE', default_string="Name", eval_string="1.0")
+        bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type="STRING",
+                                   is_overridable_library=False, description="", subtype="NONE", default_string="Name", eval_string="1.0")
 
     def auto_assign_layer_to_selection():
         """Automatically assign selected bone to appropriate layer depending on the bones prefix name"""
@@ -241,7 +241,7 @@ class MVBH_Scripts():
 
             self.set_selected_bone_active()
 
-            bpy.ops.pose.constraint_add(type='COPY_TRANSFORMS')
+            bpy.ops.pose.constraint_add(type="COPY_TRANSFORMS")
             bpy.context.object.pose.bones[bone.name].constraints[
                 "Copy Transforms"].target = bpy.data.objects[self.get_selected_armature()]
             bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].subtarget = con_targets[i].name

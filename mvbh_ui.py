@@ -14,15 +14,15 @@ class MVBH_Main_Menu(bpy.types.Menu):
 
         # use existing memu
         layout.menu("VIEW3D_MT_MVBH_Root_Menu",
-                    icon="BONE_DATA", text="ROOT/PROP")
+                    icon="PMARKER_ACT", text="ROOT/PROP")
         layout.menu("VIEW3D_MT_MVBH_Def_Menu",
                     icon="BONE_DATA", text="DEF->TGT")
         layout.menu("VIEW3D_MT_MVBH_Ctl_Menu",
-                    icon="BONE_DATA", text="CTL->MCH")
+                    icon="GROUP_BONE", text="CTL->MCH")
         layout.menu("VIEW3D_MT_MVBH_Suffix_Menu",
-                    icon="BONE_DATA", text="SUFFIX")
-        layout.menu("VIEW3D_MT_MVBH_Ctl_Menu",
-                    icon="BONE_DATA", text="CTL->MCH")
+                    icon="ARROW_LEFTRIGHT", text="SUFFIX")
+        layout.menu("VIEW3D_MT_MVBH_Hierarchy_Menu",
+                    icon="NODETREE", text="HIERARCHY")
 
 
 class MVBH_Def_Menu(bpy.types.Menu):
@@ -60,8 +60,8 @@ class MVBH_Suffix_Menu(bpy.types.Menu):
         row = layout.row(align=True)
         split = layout.split()
         col = split.column()
-        layout.operator("mvbh.set_left_suffix", text="RIGHT", icon="BONE_DATA")
-        layout.operator("mvbh.set_right_suffix", text="LEFT", icon="BONE_DATA")
+        layout.operator("mvbh.set_left_suffix", text="RIGHT", icon="TRIA_LEFT")
+        layout.operator("mvbh.set_right_suffix", text="LEFT", icon="TRIA_RIGHT")
 
 
 class MVBH_Root_Menu(bpy.types.Menu):
@@ -72,3 +72,11 @@ class MVBH_Root_Menu(bpy.types.Menu):
         layout = self.layout
         layout.operator("mvbh.add_root_bone", text="ROOT", icon="BONE_DATA")
         layout.operator("mvbh.add_prop_bone", text="PROP", icon="BONE_DATA")
+
+class MVBH_Hierarchy_Menu(bpy.types.Menu):
+    bl_idname = "VIEW3D_MT_MVBH_Hierarchy_Menu"
+    bl_label = "Hierarchy of constraint menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("mvbh.set_copy_transforms_hierarchy", text="Copy Transforms Hierarchy", icon="NODETREE")
