@@ -61,7 +61,8 @@ class MVBH_Suffix_Menu(bpy.types.Menu):
         split = layout.split()
         col = split.column()
         layout.operator("mvbh.set_left_suffix", text="RIGHT", icon="TRIA_LEFT")
-        layout.operator("mvbh.set_right_suffix", text="LEFT", icon="TRIA_RIGHT")
+        layout.operator("mvbh.set_right_suffix",
+                        text="LEFT", icon="TRIA_RIGHT")
 
 
 class MVBH_Root_Menu(bpy.types.Menu):
@@ -73,10 +74,12 @@ class MVBH_Root_Menu(bpy.types.Menu):
         layout.operator("mvbh.add_root_bone", text="ROOT", icon="BONE_DATA")
         layout.operator("mvbh.add_prop_bone", text="PROP", icon="BONE_DATA")
 
+
 class MVBH_Hierarchy_Menu(bpy.types.Menu):
     bl_idname = "VIEW3D_MT_MVBH_Hierarchy_Menu"
     bl_label = "Hierarchy of constraint menu"
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("mvbh.set_copy_transforms_hierarchy", text="Copy Transforms Hierarchy", icon="NODETREE")
+        layout.operator("mvbh.set_copy_transforms_hierarchy",
+                        text="Copy Transforms Hierarchy", icon="NODETREE")

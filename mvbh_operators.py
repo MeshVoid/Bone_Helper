@@ -29,7 +29,7 @@ class MVBH_Operator():
     #             return False
     #     else:
     #         return True
-        
+
 
 class MVBH_OT_main_menu(bpy.types.Operator):
     """Display MV Bone Helper Addon's Main Menu"""
@@ -102,8 +102,8 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-#        proceed = self.check_for_errors(check_mode= True,
-#                 check_selection=True)
+        #        proceed = self.check_for_errors(check_mode= True,
+        #                 check_selection=True)
         self.run_script.add_root_bone()
         self.show_info.display_msg(0)
         self.report({"OPERATOR"}, self.show_info.messages[0])
@@ -161,4 +161,3 @@ class MVBH_OT_set_copy_transforms_hierarchy(bpy.types.Operator, MVBH_Operator):
         self.show_info.display_msg(20)
         self.report({"OPERATOR"}, self.show_info.messages[20])
         return{"FINISHED"}
-    

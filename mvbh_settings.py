@@ -2,7 +2,7 @@
 
 # TODO: Make sure that you can change naming convention of bone names and other parameters
 # by directly changing values in MVBH_Scripts class
-import bpy  
+import bpy
 import rna_keymap_ui
 
 
@@ -24,10 +24,12 @@ keys = {"MENU": [{"label": "MV Bone Helper Main Menu",
                   "value": "PRESS"
                   }]}
 
+
 def get_keys():
     keylists = []
     keylists.append(keys["MENU"])
     return keylists
+
 
 def register_keymaps(keylists):
     wm = bpy.context.window_manager
@@ -42,7 +44,8 @@ def register_keymaps(keylists):
             region_type = item.get("region_type", "WINDOW")
 
             if keymap:
-                km = kc.keymaps.new(name=keymap, space_type=space_type, region_type=region_type)
+                km = kc.keymaps.new(
+                    name=keymap, space_type=space_type, region_type=region_type)
                 # km = kc.keymaps.new(name=keymap, space_type=space_type)
 
                 if km:
@@ -55,7 +58,8 @@ def register_keymaps(keylists):
                     alt = item.get("alt", False)
                     oskey = item.get("oskey", False)
 
-                    kmi = km.keymap_items.new(idname, type, value, shift=shift, ctrl=ctrl, alt=alt, oskey=oskey)
+                    kmi = km.keymap_items.new(
+                        idname, type, value, shift=shift, ctrl=ctrl, alt=alt, oskey=oskey)
 
                     if kmi:
                         properties = item.get("properties")
@@ -72,6 +76,7 @@ def register_keymaps(keylists):
 def unregister_keymaps(keymaps):
     for km, kmi in keymaps:
         km.keymap_items.remove(kmi)
+
 
 def register():
     global keymaps

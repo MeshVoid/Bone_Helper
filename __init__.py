@@ -18,10 +18,10 @@ bl_info = {
 }
 
 modules = [
-    MVBH_Main_Menu, 
+    MVBH_Main_Menu,
     MVBH_Root_Menu,
-    MVBH_Def_Menu, 
-    MVBH_Ctl_Menu, 
+    MVBH_Def_Menu,
+    MVBH_Ctl_Menu,
     MVBH_Suffix_Menu,
     MVBH_Hierarchy_Menu,
     MVBH_OT_main_menu,
