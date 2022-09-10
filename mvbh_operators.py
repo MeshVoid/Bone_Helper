@@ -10,29 +10,25 @@ class MVBH_Operator():
         self.run_script = MVBH_Scripts()
         self.show_info = MVBH_Messages()
 
-    def check_for_errors(self,
-                         check_mode=False, check_selection=False,
-                         check_bone_selection=False):
-        """Check if user forgot to select anything or enter edit mode or something"""
-        # TODO: Finish it
-        if check_mode:
-            if bpy.context.mode != "POSE" or bpy.context.mode != "EDIT_ARMATURE":
-                self.show_info.display_err(1)
-                run = False
-                return run
-            elif check_bone_selection:
-                if bpy.context.selected_objects in None:
-                    self.show_info.display_err(0)
-                    run = False
-                    return run
-        elif check_selection:
-            if bpy.context.selected_objects is None:
-                self.show_info.display_err(2)
-                run = False
-                return run
-        else:
-            run = False
-            return run 
+# TODO: Make it work?
+    # def check_for_errors(self,
+    #                      check_mode=False, check_selection=False,
+    #                      check_bone_selection=False):
+    #     """Check if user forgot to select anything or enter edit mode or something"""
+    #     if check_mode:
+    #         if bpy.context.mode == "OBJECT":
+    #             self.show_info.display_err(1)
+    #             return False
+    #         if check_bone_selection:
+    #             if bpy.context.selected_objects is None:
+    #                 self.show_info.display_err(0)
+    #                 return False
+    #     if check_selection:
+    #         if bpy.context.selected_objects is None:
+    #             self.show_info.display_err(2)
+    #             return False
+    #     else:
+    #         return True
         
 
 class MVBH_OT_main_menu(bpy.types.Operator):
@@ -81,8 +77,8 @@ class MVBH_OT_set_left_suffix(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.run_script.set_left_suffix()
         self.show_info.display_msg(10)
-        self.report({'OPERATOR'}, self.show_info.messages[10])
-        return {'FINISHED'}
+        self.report({"OPERATOR"}, self.show_info.messages[10])
+        return {"FINISHED"}
 
 
 class MVBH_OT_set_right_suffix(bpy.types.Operator, MVBH_Operator):
@@ -95,8 +91,8 @@ class MVBH_OT_set_right_suffix(bpy.types.Operator, MVBH_Operator):
         self.run_script.check_for_errors(check_selection=True)
         self.run_script.set_right_suffix()
         self.show_info.display_msg(11)
-        self.report({'OPERATOR'}, self.show_info.messages[11])
-        return {'FINISHED'}
+        self.report({"OPERATOR"}, self.show_info.messages[11])
+        return {"FINISHED"}
 
 
 class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
@@ -106,13 +102,12 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        run = False
-        self.check_for_errors(check_selection=True, check_mode=True)
-        if run:
-            self.run_script.add_root_bone()
-            self.show_info.display_msg(0)
-            self.report({'OPERATOR'}, self.show_info.messages[0])
-            return {"FINISHED"}
+#        proceed = self.check_for_errors(check_mode= True,
+#                 check_selection=True)
+        self.run_script.add_root_bone()
+        self.show_info.display_msg(0)
+        self.report({"OPERATOR"}, self.show_info.messages[0])
+        return {"FINISHED"}
 
 
 class MVBH_OT_add_prop_bone(bpy.types.Operator, MVBH_Operator):
@@ -125,7 +120,7 @@ class MVBH_OT_add_prop_bone(bpy.types.Operator, MVBH_Operator):
         self.run_script.add_prop_bone()
         self.show_info.display_msg(1)
         self.report({"OPERATOR"}, self.show_info.messages[1])
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
@@ -151,5 +146,5 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.run_script.add_ctl_bones()
         self.show_info.display_msg(4)
-        self.report({'OPERATOR'}, self.show_info.messages[4])
+        self.report({"OPERATOR"}, self.show_info.messages[4])
         return {"FINISHED"}
