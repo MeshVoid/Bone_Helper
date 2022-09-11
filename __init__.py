@@ -7,7 +7,8 @@ from . mvbh_settings import *
 bl_info = {
     "name": "MeshVoid Bone Helper",
     "author": "Chingiz Jumagulov aka MeshVoid, meshvoid.com",
-    "description": "",
+    "description": """MeshVoid's Bone Helper addon. Here to help 
+    you with all your manual rigging bone managing needs.""",
     "blender": (3, 2, 2),
     "version": (0, 0, 9),
     "location": "View3D > Armature Edit Mode > Custom Menu Popup",
