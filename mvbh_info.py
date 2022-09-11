@@ -1,7 +1,6 @@
-import bpy
-
+import bpy #do i need to import it here?
 # TODO: finish all messages to display to user
-
+#import mvbh_methods
 
 class MVBH_Messages():
     def __init__(self):
@@ -18,12 +17,12 @@ class MVBH_Messages():
             7: "Parented selected bones to Root bone!",
             8: "",
             9: "",
-            10: "Assigned Left side suffix to selected bones",
-            11: "Assigned Right side suffix to selected bones",
-            12: "Assigned Center position suffix to selected bones",
-            20: "Copy Transforms Constraint hierarchy has been assigned to selected bones",
-
-        }
+            10: "Assigned Left side suffix to selected bones!",
+            11: "Assigned Right side suffix to selected bones!",
+            12: "Assigned Center position suffix to selected bones!",
+            20: "Copy Transforms Constraint hierarchy has been assigned to selected bones!",
+            21: "Set up copy transforms constraint hierarchy between all Deformation and Target bones of the rig!",
+            }
 
         self.errors = {
             0: "No bones are selected in the viewport, please select some!",

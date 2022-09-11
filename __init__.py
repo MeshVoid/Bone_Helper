@@ -9,7 +9,7 @@ bl_info = {
     "author": "Chingiz Jumagulov aka MeshVoid, meshvoid.com",
     "description": "",
     "blender": (3, 2, 2),
-    "version": (0, 0, 8),
+    "version": (0, 0, 9),
     "location": "View3D > Armature Edit Mode > Custom Menu Popup",
     "support": "COMMUNITY",
     "warning": "Report bugs on github: https://github.com/MeshVoid/Bone_Helper",
@@ -34,6 +34,8 @@ modules = [
     MVBH_OT_set_left_suffix,
     MVBH_OT_set_right_suffix,
     MVBH_OT_set_copy_transforms_hierarchy,
+    MVBH_OT_set_def_tgt_hierarchy,
+    MVBH_OT_parent_to_root_bone,
 ]
 
 

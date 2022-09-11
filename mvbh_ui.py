@@ -60,9 +60,8 @@ class MVBH_Suffix_Menu(bpy.types.Menu):
         row = layout.row(align=True)
         split = layout.split()
         col = split.column()
-        layout.operator("mvbh.set_left_suffix", text="RIGHT", icon="TRIA_LEFT")
-        layout.operator("mvbh.set_right_suffix",
-                        text="LEFT", icon="TRIA_RIGHT")
+        layout.operator("mvbh.set_left_suffix", text="Left", icon="EVENT_L")
+        layout.operator("mvbh.set_right_suffix", text="Right", icon="EVENT_R")
 
 
 class MVBH_Root_Menu(bpy.types.Menu):
@@ -73,6 +72,7 @@ class MVBH_Root_Menu(bpy.types.Menu):
         layout = self.layout
         layout.operator("mvbh.add_root_bone", text="ROOT", icon="BONE_DATA")
         layout.operator("mvbh.add_prop_bone", text="PROP", icon="BONE_DATA")
+        
 
 
 class MVBH_Hierarchy_Menu(bpy.types.Menu):
@@ -83,3 +83,5 @@ class MVBH_Hierarchy_Menu(bpy.types.Menu):
         layout = self.layout
         layout.operator("mvbh.set_copy_transforms_hierarchy",
                         text="Copy Transforms Hierarchy", icon="NODETREE")
+        layout.operator("mvbh.set_def_tgt_hierarchy", icon="BONE_DATA")
+        layout.operator("mvbh.parent_to_root_bone", icon="BONE_DATA")
