@@ -22,7 +22,7 @@ class MVBH_Main_Menu(bpy.types.Menu):
         layout.menu("VIEW3D_MT_MVBH_Suffix_Menu",
                     icon="ARROW_LEFTRIGHT", text="SUFFIX")
         layout.menu("VIEW3D_MT_MVBH_Hierarchy_Menu",
-                    icon="NODETREE", text="HIERARCHY")
+                    icon="NODETREE", text="CNSTRNTS")
 
 
 class MVBH_Def_Menu(bpy.types.Menu):
@@ -36,7 +36,8 @@ class MVBH_Def_Menu(bpy.types.Menu):
         col = split.column()
         layout.operator("mvbh.set_def_bones", text="SET DEF", icon="BONE_DATA")
         layout.operator("mvbh.add_tgt_bones", text="ADD TGT", icon="BONE_DATA")
-
+        layout.operator("mvbh.set_def_tgt_hierarchy",
+                        text="DEF->TGT->ROOT", icon="BONE_DATA")
 
 class MVBH_Ctl_Menu(bpy.types.Menu):
     bl_idname = "VIEW3D_MT_MVBH_Ctl_Menu"
@@ -49,6 +50,8 @@ class MVBH_Ctl_Menu(bpy.types.Menu):
         col = split.column()
         layout.operator("mvbh.add_ctl_bones", text="ADD CTL", icon="BONE_DATA")
         layout.operator("mvbh.set_ctl_bones", text="SET CTL", icon="BONE_DATA")
+        layout.operator("mvbh.add_mch_bones", text="ADD MCH", icon="BONE_DATA")
+        layout.operator("mvbh.set_mch_bones", text="SET MCH", icon="BONE_DATA")
 
 
 class MVBH_Suffix_Menu(bpy.types.Menu):
@@ -72,7 +75,8 @@ class MVBH_Root_Menu(bpy.types.Menu):
         layout = self.layout
         layout.operator("mvbh.add_root_bone", text="ROOT", icon="BONE_DATA")
         layout.operator("mvbh.add_prop_bone", text="PROP", icon="BONE_DATA")
-        
+        layout.operator("mvbh.parent_to_root_bone",
+                text="Parent->Bone->Root", icon="BONE_DATA")
 
 
 class MVBH_Hierarchy_Menu(bpy.types.Menu):
@@ -82,6 +86,5 @@ class MVBH_Hierarchy_Menu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
         layout.operator("mvbh.set_copy_transforms_hierarchy",
-                        text="Copy Transforms Hierarchy", icon="NODETREE")
-        layout.operator("mvbh.set_def_tgt_hierarchy", icon="BONE_DATA")
-        layout.operator("mvbh.parent_to_root_bone", icon="BONE_DATA")
+                        text="CopyTranform Hierarchy", icon="NODETREE")
+

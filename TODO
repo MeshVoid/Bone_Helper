@@ -1,6 +1,7 @@
 
 TODO:
   ✔ * Refactor module names, maybe also class names? @done(22-09-04 22:09)
+  - Make Main Menu appear in Armature context menu when you right click in armature mode
   - Assign layer assignment logic to every set_bonetype method in mvbh_scripts class
   - Figure out how to assign custom property to the armature and change it's type and name
   - Define all operators in operators module

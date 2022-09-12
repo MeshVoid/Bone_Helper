@@ -212,7 +212,7 @@ class MVBH_Scripts():
 
     def move_selected_bones_to_layer(self, layer_number):
         """Set bones list to a specified bone layer and assign a layer_name"""
-#TODO: FINISH THIS
+# TODO: FINISH THIS
         layers_list = [False] * 32
         layers_list[layer_number] = True  # sets proper layer out of 32 values
         bpy.ops.armature.bone_layers(
@@ -316,6 +316,7 @@ class MVBH_Scripts():
             boneToSelect.select = True
 
     def set_def_bones(self):
+        #TODO: 
         """Sets Deform value ON and adds a self.def_prefix prefix to selected bones"""
         self.toggle_mode(editmode=True)
 
@@ -327,23 +328,49 @@ class MVBH_Scripts():
         self.set_xyz_rotation_mode()
 
     def set_ctl_bones(self):
-        """Sets Deform value OFF on selected bones and replaces any suffix on the bone
-        to CTL-, applies CopyTransform constraints"""
+        """Sets Deform value OFF on selected bones and replaces any suffix on the bone, renames prefix to CTL-"""
         self.toggle_mode(editmode=True)
+
         for bone in self.get_selected_bones():
             bone_suffix = bone.name[-4:]
-            if self.ctl_prefix not in bone.name[:len(self.ctl_prefix)]:
-                if self.tgt_prefix in bone.name[:len(self.tgt_prefix)]:
+            if not bone.name.startswith(self.ctl_prefix):
+                if bone.name.startswith(self.def_prefix):
+                    bone.name = bone.name.replace(
+                        self.def_prefix, self.ctl_prefix)
+                if bone.name.startswith(self.tgt_prefix):
                     bone.name = bone.name.replace(
                         self.tgt_prefix, self.ctl_prefix)
-                if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
+                if bone.name.startswith(self.mch_prefix):
                     bone.name = bone.name.replace(
                         self.mch_prefix, self.ctl_prefix)
-                if self.ctl_prefix not in bone.name:
+                if not bone.name.startswith(self.ctl_prefix):
                     bone.name = self.ctl_prefix + bone.name
             if ".00" in bone_suffix:
                 bone.name = bone.name[:-4]
-            bone.use_deform = False
+        bone.use_deform = False
+        self.set_xyz_rotation_mode()
+    
+    def set_mch_bones(self):
+        """Sets Deform value OFF on selected bones and replaces any suffix on the bone, renames prefix to MCH-"""
+        self.toggle_mode(editmode=True)
+
+        for bone in self.get_selected_bones():
+            bone_suffix = bone.name[-4:]
+            if not bone.name.startswith(self.mch_prefix):
+                if bone.name.startswith(self.def_prefix):
+                    bone.name = bone.name.replace(
+                        self.def_prefix, self.mch_prefix)
+                if bone.name.startswith(self.tgt_prefix):
+                    bone.name = bone.name.replace(
+                        self.tgt_prefix, self.mch_prefix)
+                if bone.name.startswith(self.ctl_prefix):
+                    bone.name = bone.name.replace(
+                        self.ctl_prefix, self.mch_prefix)
+                if not bone.name.startswith(self.mch_prefix):
+                    bone.name = self.mch_prefix + bone.name
+            if ".00" in bone_suffix:
+                bone.name = bone.name[:-4]
+        bone.use_deform = False
         self.set_xyz_rotation_mode()
 
     def add_ctl_bones(self):
@@ -352,24 +379,50 @@ class MVBH_Scripts():
         bpy.ops.armature.duplicate()
         for bone in self.get_selected_bones():
             bone_suffix = bone.name[-4:]
-
-            if self.ctl_prefix not in bone.name:
-                if self.tgt_prefix in bone.name[:len(self.tgt_prefix)]:
+            if not bone.name.startswith(self.ctl_prefix):
+                if bone.name.startswith(self.def_prefix):
+                    bone.name = bone.name.replace(
+                        self.def_prefix, self.ctl_prefix)
+                if bone.name.startswith(self.tgt_prefix):
                     bone.name = bone.name.replace(
                         self.tgt_prefix, self.ctl_prefix)
-                if self.mch_prefix in bone.name[:len(self.mch_prefix)]:
+                if bone.name.startswith(self.mch_prefix):
                     bone.name = bone.name.replace(
                         self.mch_prefix, self.ctl_prefix)
-                if self.ctl_prefix not in bone.name:
+                if not bone.name.startswith(self.ctl_prefix):
                     bone.name = self.ctl_prefix + bone.name
             if ".00" in bone_suffix:
-                bone_name = bone.name[:-4]
-                bone.use_deform = False
-            self.set_xyz_rotation_mode()
+                bone.name = bone.name[:-4]
+        bone.use_deform = False
+        self.set_xyz_rotation_mode()
+
+    
+    def add_mch_bones(self): 
+        """Sets Deform value OFF on selected bones and replaces any suffix on the bone, renames prefix to MCH-"""
+        #TODO: FINISH 
+        self.toggle_mode(editmode=True)
+        bpy.ops.armature.duplicate()
+        for bone in self.get_selected_bones():
+            bone_suffix = bone.name[-4:]
+            if not bone.name.startswith(self.mch_prefix):
+                if bone.name.startswith(self.def_prefix):
+                    bone.name = bone.name.replace(
+                        self.def_prefix, self.mch_prefix)
+                if bone.name.startswith(self.tgt_prefix):
+                    bone.name = bone.name.replace(
+                        self.tgt_prefix, self.mch_prefix)
+                if bone.name.startswith(self.ctl_prefix):
+                    bone.name = bone.name.replace(
+                        self.ctl_prefix, self.mch_prefix)
+                if not bone.name.startswith(self.mch_prefix):
+                    bone.name = self.mch_prefix + bone.name
+            if ".00" in bone_suffix:
+                bone.name = bone.name[:-4]
+        bone.use_deform = False
+        self.set_xyz_rotation_mode() 
 
     def add_root_bone(self):
         """Add a root bone to the rig"""
-
         self.toggle_mode(editmode=True)
         self.deselect_all_bones()
         bpy.ops.armature.bone_primitive_add(name=self.root_name)
@@ -383,8 +436,7 @@ class MVBH_Scripts():
 
     def add_prop_bone(self):
         """Add a property bone to the rig"""
-        if bpy.context.mode == "POSE":
-            self.toggle_mode(editmode=True)
+        self.toggle_mode(editmode=True)
         self.deselect_all_bones()
         bpy.ops.armature.bone_primitive_add(name=self.prop_name)
         self.select_bone_by_name(bone_name=self.prop_name)
@@ -431,6 +483,10 @@ class MVBH_Scripts():
         def_bones = self.select_all_def_bones()
         tgt_bones = self.select_all_tgt_bones()
         self.set_copy_transforms_constraint(def_bones, tgt_bones)
+        # if there's a root bone, parent def bones to root bone
+        if bpy.data.armatures[self.get_selected_armature()].bones[self.root_name]:
+            self.toggle_mode(editmode=True)
+            self.parent_def_bones_to_root()
 
     def parent_def_bones_to_root(self):
         """Clear DEF bones parental relationships and parent them to root"""

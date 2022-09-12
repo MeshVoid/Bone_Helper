@@ -10,7 +10,7 @@ class MVBH_Operator():
         self.run_script = MVBH_Scripts()
         self.show_info = MVBH_Messages()
 
-# TODO: Make it work?
+# TODO: Make it work? maybe use return {"Finished"} instead of returning a bool value?
     # def check_for_errors(self,
     #                      check_mode=False, check_selection=False,
     #                      check_bone_selection=False):
@@ -65,6 +65,17 @@ class MVBH_OT_set_ctl_bones(bpy.types.Operator, MVBH_Operator):
         return {"FINISHED"}
 
 
+class MVBH_OT_set_mch_bones(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_mch_bones"
+    bl_label = "Set selected bones as Mechanism bones."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.set_mch_bones()
+        self.show_info.display_msg(5)
+        self.report({"OPERATOR"}, self.show_info.messages[5])
+        return {"FINISHED"}
+
 class MVBH_OT_set_left_suffix(bpy.types.Operator, MVBH_Operator):
     bl_label = "Adds Left side suffix to selected bones."
     bl_idname = "mvbh.set_left_suffix"
@@ -95,8 +106,6 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        #        proceed = self.check_for_errors(check_mode= True,
-        #                 check_selection=True)
         self.run_script.add_root_bone()
         self.show_info.display_msg(0)
         self.report({"OPERATOR"}, self.show_info.messages[0])
@@ -135,10 +144,21 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.run_script.add_ctl_bones()
-        self.show_info.display_msg(4)
+        self.show_info.display_msg(8)
         self.report({"OPERATOR"}, self.show_info.messages[4])
         return {"FINISHED"}
 
+
+class MVBH_OT_add_mch_bones(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.add_mch_bones"
+    bl_label = "Add Mechanism bones to selected bones with proper naming convention and properties"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.run_script.add_mch_bones()
+        self.show_info.display_msg(5)
+        self.report({"OPERATOR"}, self.show_info.messages[5])
+        return {"FINISHED"}
 
 class MVBH_OT_set_copy_transforms_hierarchy(bpy.types.Operator, MVBH_Operator):
     bl_idname = "mvbh.set_copy_transforms_hierarchy"
@@ -160,7 +180,7 @@ class MVBH_OT_set_def_tgt_hierarchy(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.run_script.set_def_tgt_hierarchy()
         self.show_info.display_msg(21)
-        self.report({"OPERATOR"}. self.show_info.messages[21])
+        self.report({"OPERATOR"}, self.show_info.messages[21])
         return{"FINISHED"}
 
 
@@ -172,5 +192,5 @@ class MVBH_OT_parent_to_root_bone(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.run_script.parent_selected_bones_to_root()
         self.show_info.display_msg(7)
-        self.report({"OPERATOR"}. self.show_info.messages[7])
+        self.report({"OPERATOR"}, self.show_info.messages[7])
         return{"FINISHED"}
