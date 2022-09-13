@@ -20,7 +20,7 @@ class MVBH_Main_Menu(bpy.types.Menu):
         layout.menu("VIEW3D_MT_MVBH_Ctl_Menu",
                     icon="BONE_DATA", text="CTL->MCH")
         layout.menu("VIEW3D_MT_MVBH_Suffix_Menu",
-                    icon="ARROW_LEFTRIGHT", text="SUFFIX")
+                    icon="ARROW_LEFTRIGHT", text="SIDES")
         layout.menu("VIEW3D_MT_MVBH_Hierarchy_Menu",
                     icon="CONSTRAINT_BONE", text="CNSTRNTS")
 
@@ -68,6 +68,8 @@ class MVBH_Suffix_Menu(bpy.types.Menu):
         col = split.column()
         layout.operator("mvbh.set_left_suffix", text="Left", icon="EVENT_L")
         layout.operator("mvbh.set_right_suffix", text="Right", icon="EVENT_R")
+        layout.operator("mvbh.set_center_suffix", text="Center", icon="EVENT_C")
+
 
 
 class MVBH_Root_Menu(bpy.types.Menu):

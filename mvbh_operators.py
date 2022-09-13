@@ -103,7 +103,7 @@ class MVBH_OT_set_left_suffix(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        self.script.set_left_suffix()
+        self.script.set_side_suffix(side=self.script.left_suffix)
         self.info.display_msg(10)
         self.report({"OPERATOR"}, self.info.messages[10])
         return {"FINISHED"}
@@ -116,8 +116,21 @@ class MVBH_OT_set_right_suffix(bpy.types.Operator, MVBH_Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        self.script.set_right_suffix()
+        self.script.set_side_suffix(side=self.script.right_suffix)
         self.info.display_msg(11)
+        self.report({"OPERATOR"}, self.info.messages[11])
+        return {"FINISHED"}
+
+
+class MVBH_OT_set_center_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_center_suffix"
+    bl_label = "Set Center bone side suffix"
+    bl_description = "Set Center side suffix to selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.set_side_suffix(side=self.script.center_suffix)
+        self.info.display_msg(12)
         self.report({"OPERATOR"}, self.info.messages[11])
         return {"FINISHED"}
 
@@ -184,7 +197,7 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.make_bone_group(
-            prefix=self.script.mch_prefix, duplicate=True)
+            prefix=self.script.ctl_prefix, duplicate=True)
         self.info.display_msg(8)
         self.report({"OPERATOR"}, self.info.messages[4])
         return {"FINISHED"}

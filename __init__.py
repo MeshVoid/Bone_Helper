@@ -10,7 +10,7 @@ bl_info = {
     "description": """MeshVoid's Bone Helper addon. Here to help 
     you with all your manual rigging bone managing needs.""",
     "blender": (3, 2, 2),
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "location": "View3D > Armature Edit Mode > Custom Menu Popup",
     "support": "COMMUNITY",
     "warning": "Report bugs on github: https://github.com/MeshVoid/Bone_Helper",
@@ -38,6 +38,7 @@ modules = [
     MVBH_OT_set_mch_bones,
     MVBH_OT_set_left_suffix,
     MVBH_OT_set_right_suffix,
+    MVBH_OT_set_center_suffix,
     MVBH_OT_set_copy_transforms_hierarchy,
     MVBH_OT_set_def_tgt_hierarchy,
     MVBH_OT_parent_to_root_bone,

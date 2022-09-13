@@ -46,12 +46,10 @@ class MVBH_Scripts():
 
         self.info = MVBH_Messages()
 
-        # # TODO: decide if I need checklists and should I use that bs
-        self.l_suffix_checklist = ["-l", ".l", "_l", "-left", ".left",
-                                   "_left", "-lft", ".lft", "_lft", "-lt", ".lt", "_lt"]
-        self.r_suffix_checklist = ["-r", ".r", "_r", "-right", ".right",
-                                   "_right", "-rght", ".rght", "._rght", "-rt", ".rt", "_rt"]
-        # self.c_suffix_checklist = []
+        self.sides_checklist = [
+            "-l", ".l", "_l", "-left", ".left", "_left", "-lft", ".lft", "_lft", "-lt", ".lt", "_lt", "-r", ".r", "_r", "-right", ".right", "_right", "-rght", ".rght", "._rght", "-rt", ".rt", "_rt",
+            "-c", ".c", "_c", "-center", ".center", "_center", "-cnt", ".cnt","_cnt", "-ct", ".ct", "_ct", "-cent", ".cent", "_cent", 
+        ]
 
 # =====================================================================
 #                ***BONE AND SELECTION LISTS***
@@ -138,7 +136,7 @@ class MVBH_Scripts():
         selected_bones = self.get_selected_bones()
         bone_group = []
         for bone in selected_bones:
-            if prefix in bone.name.startswith(prefix):
+            if bone.name.startswith(prefix):
                 bone_group.append(bone)
         return bone_group
 
@@ -218,46 +216,39 @@ class MVBH_Scripts():
         mch_bones = self.get_selected_bone_group(prefix=self.mch_prefix)
         ik_bones = self.get_selected_bone_group(prefix=self.ik_prefix)
         fk_bones = self.get_selected_bone_group(prefix=self.fk_prefix)
+        #NOTE: check if it works now
+        if def_bones and tgt_bones:
+            self.set_copy_transforms_constraint(def_bones, tgt_bones)
+        if tgt_bones and ctl_bones:
+            self.set_copy_transforms_constraint(tgt_bones, ctl_bones)
+        if tgt_bones and mch_bones:
+            self.set_copy_transforms_constraint(tgt_bones, mch_bones)
+        if mch_bones and ctl_bones:
+            self.set_copy_transforms_constraint(mch_bones, ctl_bones)
+        if ik_bones and ctl_bones:
+            self.set_copy_transforms_constraint(ik_bones, ctl_bones)
+        if fk_bones and ctl_bones:
+            self.set_copy_transforms_constraint(fk_bones, ctl_bones)    
 
-        self.set_copy_transforms_constraint(def_bones, tgt_bones)
-        self.set_copy_transforms_constraint(tgt_bones, ctl_bones)
-        self.set_copy_transforms_constraint(tgt_bones, mch_bones)
-        self.set_copy_transforms_constraint(mch_bones, ctl_bones)
-        self.set_copy_transforms_constraint(ik_bones, ctl_bones)
-        self.set_copy_transforms_constraint(fk_bones, ctl_bones)
-
-    def set_left_suffix(self):
-        """Adds self.left_suffix to selected bones."""
-        self.toggle_mode(editmode=True)
-
-        for bone in self.get_selected_bones():
-            bone_suffix = bone.name[-len(self.left_suffix):]
-# TODO: REFACTOR THIS
-            if ".l" in bone_suffix.lower() or "_l" in bone_suffix.lower() or "-l" in bone_suffix.lower():
-                bone.name = bone.name[:-
-                                      len(self.left_suffix)] + self.left_suffix
-            elif ".r" in bone_suffix.lower() or "_r" in bone_suffix.lower() or "-r" in bone_suffix.lower():
-                bone.name = bone.name[:-
-                                      len(self.right_suffix)] + self.left_suffix
-            else:
-                bone.name = bone.name + self.left_suffix
-
-    def set_right_suffix(self, renamed=False):
-        """Adds self.right_suffix to selected bones."""
+    def set_side_suffix(self, side):
+        """Adds specific Side suffix to selected bones."""
         # NOTE: Not working properly, but nice try
+        to_rename = False
+        to_add = False
         self.toggle_mode(editmode=True)
         for bone in self.get_selected_bones():
-            suffix = bone.name[-len(self.left_suffix):]
-            if renamed == False:
-                for i in self.l_suffix_checklist:
-                    if i.lower() in suffix.lower():
-                        bone.name = bone.name.replace(
-                            suffix, self.right_suffix)
-                    renamed = True
-                for i in self.r_suffix_checklist:
-                    if i.lower() in suffix.lower():
-                        bone.name = bone.name.replace(
-                            suffix, self.right_suffix)
+            suffix = bone.name[-len(side):]
+            for i in self.sides_checklist:
+                if i.lower() in suffix.lower():
+                    to_rename = True
+            if to_rename:
+                bone.name = bone.name.replace(suffix, side)
+                to_rename = False
+            elif side.lower() not in bone.name[-len(side)]:
+                to_add = True
+            if to_add:
+                bone.name = bone.name + side
+                to_add = False
 
     def set_selected_bone_active(self):
         """Set selected bone to active depending on the mode the viewport is in"""
