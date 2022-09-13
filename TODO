@@ -3,6 +3,7 @@ TODO:
   ✔ * Refactor module names, maybe also class names? @done(22-09-04 22:09)
   - Make Main Menu appear in Armature context menu when you right click in armature mode
   - Identify IK and FK bone workflow and better naming convention, show it in operators and UI
+  - Add Quality of Life things like better seletions by bone groups: like selecting all bones by prefix name, removing zeroes in the name of bones, 
   - Assign layer assignment logic to every set_bonetype method in mvbh_scripts class
   - Figure out how to assign custom property to the armature and change it's type and name
   - Define all operators in operators module

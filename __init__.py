@@ -10,7 +10,7 @@ bl_info = {
     "description": """MeshVoid's Bone Helper addon. Here to help 
     you with all your manual rigging bone managing needs.""",
     "blender": (3, 2, 2),
-    "version": (0, 1, 2),
+    "version": (0, 1, 3),
     "location": "View3D > Armature Edit Mode > Custom Menu Popup",
     "support": "COMMUNITY",
     "warning": "Report bugs on github: https://github.com/MeshVoid/Bone_Helper",

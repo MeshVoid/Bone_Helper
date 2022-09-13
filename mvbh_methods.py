@@ -19,16 +19,30 @@ class MVBH_Scripts():
         self.prop_size = 0.5
 
     # NOTE: DEF/TGT/CTL/MCH - Always come before IK/FK
+    # MCH-SWITCH
+    # CTL-FK
 
         self.def_prefix = "DEF-"
         self.tgt_prefix = "TGT-"
         self.ctl_prefix = "CTL-"
         self.mch_prefix = "MCH-"
-        self.mch_ik_prefix = "MCH-IK-"
-        self.mch_fk_prefix = "MCH-FK-"
-        self.ik_prefix = "IK-"
-        self.fk_prefix = "FK-"
-        self.twk_prefix = "TWK-"
+
+        # NOTE: I think IK, FK, TWEAK and SWITCH Should be suffixes
+
+        self.ik_suffix = "IK-"
+        self.fk_suffix = "FK-"
+        self.twk_suffix = "TWK-"
+        self.swtch_suffix = "SWITCH-"
+
+        # self.ik_prefix = "IK-"
+        # self.fk_prefix = "FK-"
+        # self.twk_prefix = "TWK-"
+        # self.ctl_fk_prefix = "CTL-FK-"
+        # self.mch_ik_prefix = "MCH-IK-"
+        # self.mch_fk_prefix = "MCH-FK-"
+        # self.mch_swt_prefix = "MCH-SWITCH-" # do you need it?
+
+
 
         self.left_suffix = "-L"
         self.right_suffix = "-R"
@@ -357,3 +371,8 @@ class MVBH_Scripts():
         for bone in selected_bones:
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
+
+    def remove_zeroes(self):
+        """Remove zeroes from all the bones in the armature"""
+        self.toggle_mode(editmode=True)
+        # TODO:FINISH IT
