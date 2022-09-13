@@ -16,7 +16,7 @@ class MVBH_Messages():
             6: "Parented Deform bones to Root bone!",
             7: "Parented selected bones to Root bone!",
             8: "Added new Control bones with appropriate naming covention and properties based on the seleced bones!",
-            9: "",
+            9: "Added new Deform bones based on the selection with appropriate properties!",
             10: "Assigned Left side suffix to selected bones!",
             11: "Assigned Right side suffix to selected bones!",
             12: "Assigned Center position suffix to selected bones!",

@@ -18,11 +18,11 @@ class MVBH_Main_Menu(bpy.types.Menu):
         layout.menu("VIEW3D_MT_MVBH_Def_Menu",
                     icon="BONE_DATA", text="DEF->TGT")
         layout.menu("VIEW3D_MT_MVBH_Ctl_Menu",
-                    icon="GROUP_BONE", text="CTL->MCH")
+                    icon="BONE_DATA", text="CTL->MCH")
         layout.menu("VIEW3D_MT_MVBH_Suffix_Menu",
                     icon="ARROW_LEFTRIGHT", text="SUFFIX")
         layout.menu("VIEW3D_MT_MVBH_Hierarchy_Menu",
-                    icon="NODETREE", text="CNSTRNTS")
+                    icon="CONSTRAINT_BONE", text="CNSTRNTS")
 
 
 class MVBH_Def_Menu(bpy.types.Menu):
@@ -34,10 +34,13 @@ class MVBH_Def_Menu(bpy.types.Menu):
         row = layout.row(align=True)
         split = layout.split()
         col = split.column()
+        layout.operator("mvbh.add_def_bones", text="ADD DEF", icon="BONE_DATA")
         layout.operator("mvbh.set_def_bones", text="SET DEF", icon="BONE_DATA")
+        layout.operator("mvbh.set_tgt_bones", text="SET TGT", icon="BONE_DATA")
         layout.operator("mvbh.add_tgt_bones", text="ADD TGT", icon="BONE_DATA")
         layout.operator("mvbh.set_def_tgt_hierarchy",
-                        text="DEF->TGT->ROOT", icon="BONE_DATA")
+                        text="DEF->TGT->ROOT", icon="CONSTRAINT_BONE")
+
 
 class MVBH_Ctl_Menu(bpy.types.Menu):
     bl_idname = "VIEW3D_MT_MVBH_Ctl_Menu"
@@ -73,10 +76,10 @@ class MVBH_Root_Menu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("mvbh.add_root_bone", text="ROOT", icon="BONE_DATA")
-        layout.operator("mvbh.add_prop_bone", text="PROP", icon="BONE_DATA")
+        layout.operator("mvbh.add_root_bone", text="ROOT", icon="PMARKER_ACT")
+        layout.operator("mvbh.add_prop_bone", text="PROP", icon="PMARKER_SEL")
         layout.operator("mvbh.parent_to_root_bone",
-                text="Parent->Bone->Root", icon="BONE_DATA")
+                        text="Parent->Bone->Root", icon="GROUP_BONE")
 
 
 class MVBH_Hierarchy_Menu(bpy.types.Menu):
@@ -87,4 +90,3 @@ class MVBH_Hierarchy_Menu(bpy.types.Menu):
         layout = self.layout
         layout.operator("mvbh.set_copy_transforms_hierarchy",
                         text="CopyTranform Hierarchy", icon="NODETREE")
-
