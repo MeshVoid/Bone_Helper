@@ -9,27 +9,7 @@ class MVBH_Operator():
     def __init__(self):
         self.script = MVBH_Scripts()
         self.info = MVBH_Messages()
-
-# TODO: Make it work? maybe use return {"Finished"} instead of returning a bool value?
-    # def check_for_errors(self,
-    #                      check_mode=False, check_selection=False,
-    #                      check_bone_selection=False):
-    #     """Check if user forgot to select anything or enter edit mode or something"""
-    #     if check_mode:
-    #         if bpy.context.mode == "OBJECT":
-    #             self.info.display_err(1)
-    #             return False
-    #         if check_bone_selection:
-    #             if bpy.context.selected_objects is None:
-    #                 self.info.display_err(0)
-    #                 return False
-    #     if check_selection:
-    #         if bpy.context.selected_objects is None:
-    #             self.info.display_err(2)
-    #             return False
-    #     else:
-    #         return True
-
+        
 
 class MVBH_OT_main_menu(bpy.types.Operator):
     bl_idname = "mvbh.main_menu"
@@ -51,6 +31,9 @@ class MVBH_OT_set_def_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(
             prefix=self.script.def_prefix, deform=True)
+        self.script.move_selected_bones_to_layer(
+            layer_number=self.script.def_layer, 
+            layer_name=self.script.def_prefix)
         self.info.display_msg(2)
         self.report({"OPERATOR"}, self.info.messages[2])
         return {"FINISHED"}
@@ -65,6 +48,9 @@ class MVBH_OT_set_tgt_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(
             prefix=self.script.tgt_prefix)
+        self.script.move_selected_bones_to_layer(
+            layer_number=self.script.tgt_layer, 
+            layer_name=self.script.tgt_prefix)
         self.info.display_msg(3)
         self.report({"OPERATOR"}, self.info.messages[3])
         return {"FINISHED"}
@@ -78,6 +64,9 @@ class MVBH_OT_set_ctl_bones(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.make_bone_group(prefix=self.script.ctl_prefix)
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.ctl_layer, 
+        layer_name=self.script.ctl_prefix)
         self.info.display_msg(4)
         self.report({"OPERATOR"}, self.info.messages[4])
         return {"FINISHED"}
@@ -91,6 +80,9 @@ class MVBH_OT_set_mch_bones(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.make_bone_group(prefix=self.script.mch_prefix)
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.mch_layer, 
+        layer_name=self.script.mch_prefix)
         self.info.display_msg(5)
         self.report({"OPERATOR"}, self.info.messages[5])
         return {"FINISHED"}
@@ -143,6 +135,9 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.add_root_bone()
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.root_layer, 
+        layer_name=self.script.root_name)
         self.info.display_msg(0)
         self.report({"OPERATOR"}, self.info.messages[0])
         return {"FINISHED"}
@@ -156,6 +151,9 @@ class MVBH_OT_add_prop_bone(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.add_prop_bone()
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.prop_layer, 
+        layer_name=self.script.prop_name)
         self.info.display_msg(1)
         self.report({"OPERATOR"}, self.info.messages[1])
         return {"FINISHED"}
@@ -170,6 +168,9 @@ class MVBH_OT_add_def_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(
             prefix=self.script.def_prefix, duplicate=True, deform=True)
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.def_layer, 
+        layer_name=self.script.def_name)
         self.info.display_msg(3)
         self.report({"OPERATOR"}, self.info.messages[3])
         return {"FINISHED"}
@@ -184,6 +185,9 @@ class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(
             prefix=self.script.tgt_prefix, duplicate=True)
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.tgt_layer, 
+        layer_name=self.script.tgt_name)
         self.info.display_msg(3)
         self.report({"OPERATOR"}, self.info.messages[3])
         return {"FINISHED"}
@@ -198,6 +202,9 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(
             prefix=self.script.ctl_prefix, duplicate=True)
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.ctl_layer, 
+        layer_name=self.script.ctl_name)
         self.info.display_msg(8)
         self.report({"OPERATOR"}, self.info.messages[4])
         return {"FINISHED"}
@@ -212,6 +219,9 @@ class MVBH_OT_add_mch_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(
             prefix=self.script.mch_prefix, duplicate=True)
+        self.script.move_selected_bones_to_layer(
+        layer_number=self.script.mch_layer, 
+        layer_name=self.script.mch_name)
         self.info.display_msg(5)
         self.report({"OPERATOR"}, self.info.messages[5])
         return {"FINISHED"}

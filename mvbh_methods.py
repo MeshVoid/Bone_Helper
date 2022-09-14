@@ -28,11 +28,12 @@ class MVBH_Scripts():
         self.mch_prefix = "MCH-"
 
         # NOTE: I think IK, FK, TWEAK and SWITCH Should be suffixes
+        # Maybe call the helper bones?
 
-        self.ik_suffix = "IK-"
-        self.fk_suffix = "FK-"
-        self.twk_suffix = "TWK-"
-        self.swtch_suffix = "SWITCH-"
+        self.ik_suffix = "-IK"
+        self.fk_suffix = "-FK"
+        self.twk_suffix = "-TWK"
+        self.swtch_suffix = "-SWITCH"
 
         # self.ik_prefix = "IK-"
         # self.fk_prefix = "FK-"
@@ -42,27 +43,25 @@ class MVBH_Scripts():
         # self.mch_fk_prefix = "MCH-FK-"
         # self.mch_swt_prefix = "MCH-SWITCH-" # do you need it?
 
-
-
         self.left_suffix = "-L"
         self.right_suffix = "-R"
         self.center_suffix = "-C"
 
-        # Layer_management hierarchy
+        # Layer numbers
         self.root_layer = 0
-        self.def_layer = 1
-        self.tgt_layer = 2
-        self.ctl_layer = 3
-        self.mch_layer = 4
-        self.ik_layer = 5
-        self.twk_layer = 6
-        self.prop_layer = 7
+        self.prop_layer = 1
+        self.def_layer = 2
+        self.tgt_layer = 3
+        self.ctl_layer = 4
+        self.mch_layer = 5
+        self.ik_layer = 6
+        self.twk_layer = 7
 
         self.info = MVBH_Messages()
 
         self.sides_checklist = [
             "-l", ".l", "_l", "-left", ".left", "_left", "-lft", ".lft", "_lft", "-lt", ".lt", "_lt", "-r", ".r", "_r", "-right", ".right", "_right", "-rght", ".rght", "._rght", "-rt", ".rt", "_rt",
-            "-c", ".c", "_c", "-center", ".center", "_center", "-cnt", ".cnt","_cnt", "-ct", ".ct", "_ct", "-cent", ".cent", "_cent", 
+            "-c", ".c", "_c", "-center", ".center", "_center", "-cnt", ".cnt", "_cnt", "-ct", ".ct", "_ct", "-cent", ".cent", "_cent",
         ]
 
 # =====================================================================
@@ -96,8 +95,6 @@ class MVBH_Scripts():
 
     def get_selected_armature(self):
         """Return the name of a currently selected armature"""
-        #selected_armature = bpy.context.active_object.name
-        # won't require armature to be selected?
         selected_armature = bpy.context.view_layer.objects.active.name
         return selected_armature
 
@@ -154,11 +151,9 @@ class MVBH_Scripts():
                 bone_group.append(bone)
         return bone_group
 
-
 # =====================================================================
 #                          ***SCRIPTS***
 # =====================================================================
-
 
     def toggle_mode(self, posemode=False, editmode=False):
         """Toggle to edit mode from other modes or toggle to pose mode from other modes, set args: posemode or editmode to TRUE"""
@@ -181,26 +176,16 @@ class MVBH_Scripts():
         if toggle_editmode:
             bpy.ops.object.editmode_toggle()
 
-    def move_selected_bones_to_layer(self, layer_number):
+    def move_selected_bones_to_layer(self, layer_number, layer_name):
         """Set bones list to a specified bone layer and assign a layer_name"""
-# TODO: FINISH THIS
         layers_list = [False] * 32
-        layers_list[layer_number] = True  # sets proper layer out of 32 values
-        bpy.ops.armature.bone_layers(
-            layers=layers_list)  # assign bone to layer
-        # make layer visible
+        layers_list[layer_number] = True 
+        bpy.ops.armature.bone_layers(layers=layers_list)
         bpy.context.object.data.layers[layer_number] = True
+        #assing custom property name and number
+        bpy.data.armatures[self.get_selected_armature(
+        )][f'layer_name_{layer_number}'] = layer_name
 
-    def set_layer_name(self, layer_number, layer_name):
-        """Set layer name matching user defined prefixes by adding new custom property.
-        This relies on the functionality of Blender Layer Manager"""
-        bpy.ops.wm.properties_add(data_path="object.data")
-        bpy.ops.wm.properties_edit(data_path="object.data", property_name="prop", property_type="STRING",
-                                   is_overridable_library=False, description="", subtype="NONE", default_string="Name", eval_string="1.0")
-
-    def auto_assign_layer_to_selection():
-        """Automatically assign selected bone to appropriate layer depending on the bones prefix name"""
-        pass
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
         """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
@@ -230,7 +215,7 @@ class MVBH_Scripts():
         mch_bones = self.get_selected_bone_group(prefix=self.mch_prefix)
         ik_bones = self.get_selected_bone_group(prefix=self.ik_prefix)
         fk_bones = self.get_selected_bone_group(prefix=self.fk_prefix)
-        #NOTE: check if it works now
+        # NOTE: check if it works now
         if def_bones and tgt_bones:
             self.set_copy_transforms_constraint(def_bones, tgt_bones)
         if tgt_bones and ctl_bones:
@@ -242,7 +227,7 @@ class MVBH_Scripts():
         if ik_bones and ctl_bones:
             self.set_copy_transforms_constraint(ik_bones, ctl_bones)
         if fk_bones and ctl_bones:
-            self.set_copy_transforms_constraint(fk_bones, ctl_bones)    
+            self.set_copy_transforms_constraint(fk_bones, ctl_bones)
 
     def set_side_suffix(self, side):
         """Adds specific Side suffix to selected bones."""
@@ -372,7 +357,10 @@ class MVBH_Scripts():
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
 
-    def remove_zeroes(self):
+    def remove_zeroes_name(self):
         """Remove zeroes from all the bones in the armature"""
         self.toggle_mode(editmode=True)
+        bpy.ops.armature.select_all()
+        self.get_selected_bones()
+        
         # TODO:FINISH IT
