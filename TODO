@@ -2,13 +2,13 @@
 TODO:
   ✔ * Refactor module names, maybe also class names? @done(22-09-04 22:09)
   - Make Main Menu appear in Armature context menu when you right click in armature mode
-  - Identify IK and FK bone workflow and better naming convention, show it in operators and UI
-  - Add Quality of Life things like better seletions by bone groups: like selecting all bones by prefix name, removing zeroes in the name of bones, 
-  - Assign layer assignment logic to every set_bonetype method in mvbh_scripts class
-  - Figure out how to assign custom property to the armature and change it's type and name
+  ✔ Identify IK and FK bone workflow and better naming convention, show it in operators and UI @done(22-09-14 21:17)
+  - Add Quality of Life things like better selections by bone groups: like selecting all bones by prefix name, removing zeroes in the name of bones
+  ✔ Assign layer assignment logic to every set_bonetype method in mvbh_scripts class @done(22-09-14 21:10)
+  ✔ Figure out how to assign custom property to the armature and change it's type and name @done(22-09-14 21:09)
   - Define all operators in operators module
   - Finalize UI Menu
   - Learn how to set up a custom keymap, make sure you have custom keymap setup
-  - Learn how to assign cutom parameters from the settings part of the addon.
+  - Learn how to assign custom parameters from the settings part of the addon.
   ✔ * Write logic to show info and error messages in info view and viewport @done(22-09-04 21:44) #partially though no info view yet, but will be
   ✔ Make sure appropriate methods utilise info messages and inform user @done(22-09-07 23:25)

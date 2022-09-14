@@ -9,7 +9,7 @@ class MVBH_Operator():
     def __init__(self):
         self.script = MVBH_Scripts()
         self.info = MVBH_Messages()
-        
+
 
 class MVBH_OT_main_menu(bpy.types.Operator):
     bl_idname = "mvbh.main_menu"
@@ -32,7 +32,7 @@ class MVBH_OT_set_def_bones(bpy.types.Operator, MVBH_Operator):
         self.script.make_bone_group(
             prefix=self.script.def_prefix, deform=True)
         self.script.move_selected_bones_to_layer(
-            layer_number=self.script.def_layer, 
+            layer_number=self.script.def_layer,
             layer_name=self.script.def_prefix)
         self.info.display_msg(2)
         self.report({"OPERATOR"}, self.info.messages[2])
@@ -49,7 +49,7 @@ class MVBH_OT_set_tgt_bones(bpy.types.Operator, MVBH_Operator):
         self.script.make_bone_group(
             prefix=self.script.tgt_prefix)
         self.script.move_selected_bones_to_layer(
-            layer_number=self.script.tgt_layer, 
+            layer_number=self.script.tgt_layer,
             layer_name=self.script.tgt_prefix)
         self.info.display_msg(3)
         self.report({"OPERATOR"}, self.info.messages[3])
@@ -65,8 +65,8 @@ class MVBH_OT_set_ctl_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(prefix=self.script.ctl_prefix)
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.ctl_layer, 
-        layer_name=self.script.ctl_prefix)
+            layer_number=self.script.ctl_layer,
+            layer_name=self.script.ctl_prefix)
         self.info.display_msg(4)
         self.report({"OPERATOR"}, self.info.messages[4])
         return {"FINISHED"}
@@ -81,8 +81,8 @@ class MVBH_OT_set_mch_bones(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.make_bone_group(prefix=self.script.mch_prefix)
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.mch_layer, 
-        layer_name=self.script.mch_prefix)
+            layer_number=self.script.mch_layer,
+            layer_name=self.script.mch_prefix)
         self.info.display_msg(5)
         self.report({"OPERATOR"}, self.info.messages[5])
         return {"FINISHED"}
@@ -136,8 +136,8 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.add_root_bone()
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.root_layer, 
-        layer_name=self.script.root_name)
+            layer_number=self.script.root_layer,
+            layer_name=self.script.root_name)
         self.info.display_msg(0)
         self.report({"OPERATOR"}, self.info.messages[0])
         return {"FINISHED"}
@@ -152,8 +152,8 @@ class MVBH_OT_add_prop_bone(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.add_prop_bone()
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.prop_layer, 
-        layer_name=self.script.prop_name)
+            layer_number=self.script.prop_layer,
+            layer_name=self.script.prop_name)
         self.info.display_msg(1)
         self.report({"OPERATOR"}, self.info.messages[1])
         return {"FINISHED"}
@@ -169,8 +169,8 @@ class MVBH_OT_add_def_bones(bpy.types.Operator, MVBH_Operator):
         self.script.make_bone_group(
             prefix=self.script.def_prefix, duplicate=True, deform=True)
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.def_layer, 
-        layer_name=self.script.def_name)
+            layer_number=self.script.def_layer,
+            layer_name=self.script.def_name)
         self.info.display_msg(3)
         self.report({"OPERATOR"}, self.info.messages[3])
         return {"FINISHED"}
@@ -186,8 +186,8 @@ class MVBH_OT_add_tgt_bones(bpy.types.Operator, MVBH_Operator):
         self.script.make_bone_group(
             prefix=self.script.tgt_prefix, duplicate=True)
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.tgt_layer, 
-        layer_name=self.script.tgt_name)
+            layer_number=self.script.tgt_layer,
+            layer_name=self.script.tgt_prefix)
         self.info.display_msg(3)
         self.report({"OPERATOR"}, self.info.messages[3])
         return {"FINISHED"}
@@ -203,8 +203,8 @@ class MVBH_OT_add_ctl_bones(bpy.types.Operator, MVBH_Operator):
         self.script.make_bone_group(
             prefix=self.script.ctl_prefix, duplicate=True)
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.ctl_layer, 
-        layer_name=self.script.ctl_name)
+            layer_number=self.script.ctl_layer,
+            layer_name=self.script.ctl_prefix)
         self.info.display_msg(8)
         self.report({"OPERATOR"}, self.info.messages[4])
         return {"FINISHED"}
@@ -220,8 +220,8 @@ class MVBH_OT_add_mch_bones(bpy.types.Operator, MVBH_Operator):
         self.script.make_bone_group(
             prefix=self.script.mch_prefix, duplicate=True)
         self.script.move_selected_bones_to_layer(
-        layer_number=self.script.mch_layer, 
-        layer_name=self.script.mch_name)
+            layer_number=self.script.mch_layer,
+            layer_name=self.script.mch_prefix)
         self.info.display_msg(5)
         self.report({"OPERATOR"}, self.info.messages[5])
         return {"FINISHED"}
@@ -264,3 +264,77 @@ class MVBH_OT_parent_to_root_bone(bpy.types.Operator, MVBH_Operator):
         self.info.display_msg(7)
         self.report({"OPERATOR"}, self.info.messages[7])
         return{"FINISHED"}
+
+
+class MVBH_OT_set_ik_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_ik_suffix"
+    bl_label = "Set IK bone type suffix"
+    bl_description = "Set IK bone suffix to currently selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.set_bone_suffix(self.script.ik_suffix)
+        self.script.move_selected_bones_to_layer(
+            self.script.ik_layer, self.script.ik_suffix)
+        self.info.display_msg(13)
+        self.report({"OPERATOR"}, self.info.messages[13])
+        return{"FINISHED"}
+
+
+class MVBH_OT_set_fk_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_fk_suffix"
+    bl_label = "Set FK bone type suffix"
+    bl_description = "Set FK bone suffix to currently selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.set_bone_suffix(self.script.fk_suffix)
+        self.script.move_selected_bones_to_layer(
+            self.script.fk_layer, self.script.fk_suffix)
+        self.info.display_msg(14)
+        self.report({"OPERATOR"}, self.info.messages[14])
+        return{"FINISHED"}
+
+
+class MVBH_OT_set_twk_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_twk_suffix"
+    bl_label = "Set Tweak bone type suffix"
+    bl_description = "Set Tweak bone suffix to currently selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.set_bone_suffix(self.script.twk_suffix)
+        self.script.move_selected_bones_to_layer(
+            self.script.fk_layer, self.script.fk_suffix)
+        self.info.display_msg(15)
+        self.report({"OPERATOR"}, self.info.messages[15])
+        return{"FINISHED"}
+
+
+class MVBH_OT_set_swtch_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_swtch_suffix"
+    bl_label = "Set Tweak bone type suffix"
+    bl_description = "Set Tweak bone suffix to currently selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.set_bone_suffix(self.script.swtch_suffix)
+        self.info.display_msg(16)
+        self.report({"OPERATOR"}, self.info.messages[16])
+        return{"FINISHED"}
+
+
+class MVBH_OT_remove_zeroes(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.remove_zeroes"
+    bl_label = "Remove Zeroes in bone names"
+    bl_description = "Get rid of Zeroes in selected bones names"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.replace_in_bone_names(value="0", target="")
+        self.info.display_msg(17)
+        self.report({"OPERATOR"}, self.info.messages[17])
+        return{"FINISHED"}
+        
+#TODO: FINISH SELECTION OPERATORS AND RENAME MENUS - SEPARATE SELECTION AND 
+# RENAMING COMMON NAMES

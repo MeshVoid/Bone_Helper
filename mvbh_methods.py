@@ -2,11 +2,6 @@
 import bpy
 from .mvbh_info import MVBH_Messages
 
-# TODO: Learn how to show error messages in info view
-# TODO: Finish writing logic for adding and setting bones
-# TODO: Finish writing logic for layer hierarchy
-# TODO: Refactor all [:len(suffix.bla_bla_bla)] to endswith() and startswith() <- because of PEP8 compliance
-
 
 class MVBH_Scripts():
     """Class to run or test all the methods run by the addon. Change these to edit values executed by other parts of the addon. """
@@ -15,47 +10,33 @@ class MVBH_Scripts():
         """Initialization values. Change these properties to modify your naming convention and other parameters."""
         self.root_name = "ROOT"
         self.root_size = 2
-        self.prop_name = "PROPS"
+        self.prop_name = "PROP"
         self.prop_size = 0.5
-
-    # NOTE: DEF/TGT/CTL/MCH - Always come before IK/FK
-    # MCH-SWITCH
-    # CTL-FK
 
         self.def_prefix = "DEF-"
         self.tgt_prefix = "TGT-"
         self.ctl_prefix = "CTL-"
         self.mch_prefix = "MCH-"
 
-        # NOTE: I think IK, FK, TWEAK and SWITCH Should be suffixes
-        # Maybe call the helper bones?
-
         self.ik_suffix = "-IK"
         self.fk_suffix = "-FK"
         self.twk_suffix = "-TWK"
         self.swtch_suffix = "-SWITCH"
-
-        # self.ik_prefix = "IK-"
-        # self.fk_prefix = "FK-"
-        # self.twk_prefix = "TWK-"
-        # self.ctl_fk_prefix = "CTL-FK-"
-        # self.mch_ik_prefix = "MCH-IK-"
-        # self.mch_fk_prefix = "MCH-FK-"
-        # self.mch_swt_prefix = "MCH-SWITCH-" # do you need it?
 
         self.left_suffix = "-L"
         self.right_suffix = "-R"
         self.center_suffix = "-C"
 
         # Layer numbers
-        self.root_layer = 0
-        self.prop_layer = 1
-        self.def_layer = 2
-        self.tgt_layer = 3
-        self.ctl_layer = 4
-        self.mch_layer = 5
-        self.ik_layer = 6
-        self.twk_layer = 7
+        self.root_layer = 31
+        self.prop_layer = 0
+        self.def_layer = 1
+        self.tgt_layer = 2
+        self.ctl_layer = 3
+        self.mch_layer = 4
+        self.ik_layer = 5
+        self.twk_layer = 6
+        self.swtch_layer = 7
 
         self.info = MVBH_Messages()
 
@@ -112,17 +93,10 @@ class MVBH_Scripts():
         def_bones = self.get_selected_bones()
         return def_bones
 
-    def select_all_tgt_bones(self, extend=False):
-        """Select all target bones in the viewport based on the user's prefix"""
-        bpy.ops.object.select_pattern(
-            pattern=self.tgt_prefix + "*", case_sensitive=True, extend=extend)
-        tgt_bones = self.get_selected_bones()
-        return tgt_bones
-
-    def select_all_bones_by_prefix(self, bone_prefix=''):
+    def select_all_bones_by_prefix(self, bone_prefix='', extend=False):
         "Select specific bone/bones by specifying a certain prefix name"
         bpy.ops.object.select_pattern(
-            pattern=bone_prefix + "*", case_sensitive=True, extend=False)
+            pattern=bone_prefix + "*", case_sensitive=True, extend=extend)
         selected_bones = self.get_selected_bones()
         return selected_bones
 
@@ -179,13 +153,14 @@ class MVBH_Scripts():
     def move_selected_bones_to_layer(self, layer_number, layer_name):
         """Set bones list to a specified bone layer and assign a layer_name"""
         layers_list = [False] * 32
-        layers_list[layer_number] = True 
+        layers_list[layer_number] = True
         bpy.ops.armature.bone_layers(layers=layers_list)
         bpy.context.object.data.layers[layer_number] = True
-        #assing custom property name and number
+        # Strip layer_name from special symbols
+        layer_name = ''.join(i for i in layer_name if i.isalpha())
+        # assing custom property name and number
         bpy.data.armatures[self.get_selected_armature(
         )][f'layer_name_{layer_number}'] = layer_name
-
 
     def set_copy_transforms_constraint(self, con_bones, con_targets):
         """Set copy transforms constraints con_bones - target bones list, con_targets - subtarget
@@ -213,9 +188,8 @@ class MVBH_Scripts():
         tgt_bones = self.get_selected_bone_group(prefix=self.tgt_prefix)
         ctl_bones = self.get_selected_bone_group(prefix=self.ctl_prefix)
         mch_bones = self.get_selected_bone_group(prefix=self.mch_prefix)
-        ik_bones = self.get_selected_bone_group(prefix=self.ik_prefix)
-        fk_bones = self.get_selected_bone_group(prefix=self.fk_prefix)
-        # NOTE: check if it works now
+        ik_bones = self.get_selected_bone_group(prefix=self.ik_suffix)
+        fk_bones = self.get_selected_bone_group(prefix=self.fk_suffix)
         if def_bones and tgt_bones:
             self.set_copy_transforms_constraint(def_bones, tgt_bones)
         if tgt_bones and ctl_bones:
@@ -231,7 +205,6 @@ class MVBH_Scripts():
 
     def set_side_suffix(self, side):
         """Adds specific Side suffix to selected bones."""
-        # NOTE: Not working properly, but nice try
         to_rename = False
         to_add = False
         self.toggle_mode(editmode=True)
@@ -248,6 +221,34 @@ class MVBH_Scripts():
             if to_add:
                 bone.name = bone.name + side
                 to_add = False
+
+    def set_bone_suffix(self, bone_suffix):
+        """Adds specific Bone type suffix to selected bones."""
+        self.toggle_mode(editmode=True)
+        check_lst = [self.ik_suffix, self.fk_suffix,
+                     self.twk_suffix, self.swtch_suffix]
+        for bone in self.get_selected_bones():
+            to_add = True
+            to_rename = False
+            for i in check_lst:
+                if i in bone.name:
+                    to_rename = True
+                if to_rename:
+                    bone.name = bone.name.replace(i, bone_suffix)
+                    to_rename = False
+                    to_add = False
+            if to_add:
+                if bone.name.endswith(self.left_suffix):
+                    bone.name = bone.name.replace(self.left_suffix, "")
+                    bone.name = bone.name + bone_suffix + self.left_suffix
+                elif bone.name.endswith(self.right_suffix):
+                    bone.name = bone.name.replace(self.right_suffix, "")
+                    bone.name = bone.name + bone_suffix + self.right_suffix
+                elif bone.name.endswith(self.center_suffix):
+                    bone.name = bone.name.replace(self.center_suffix, "")
+                    bone.name = bone.name + bone_suffix + self.center_suffix
+                else:
+                    bone.name = bone.name.replace(self.right_suffix, "")
 
     def set_selected_bone_active(self):
         """Set selected bone to active depending on the mode the viewport is in"""
@@ -292,6 +293,7 @@ class MVBH_Scripts():
         bpy.ops.armature.roll_clear()
         self.set_xyz_rotation_mode()
         self.parent_selected_bones_to_root()
+        self.select_bone_by_name(bone_name=self.prop_name)
 
     def make_bone_group(self, prefix, deform=False, duplicate=False, xyz=True):
         """Sets or adds bone prefix and specified parameters to selected bones"""
@@ -321,31 +323,30 @@ class MVBH_Scripts():
             bone.use_deform = deform
         if xyz:
             self.set_xyz_rotation_mode()
+        
 
     def set_def_tgt_hierarchy(self):
         """Set Deform-Target bone hierarchy with all necessary parameters"""
         self.toggle_mode(posemode=True)
-        def_bones = self.select_all_def_bones()
-        tgt_bones = self.select_all_tgt_bones()
+        def_bones = self.select_all_bones_by_prefix(
+            bone_prefix=self.def_prefix, extend=False)
+        tgt_bones = self.select_all_bones_by_prefix(
+            bone_prefix=self.tgt_prefix, extend=False)
         self.set_copy_transforms_constraint(def_bones, tgt_bones)
         # if there's a root bone, parent def bones to root bone
         if bpy.data.armatures[self.get_selected_armature()].bones[self.root_name]:
             self.toggle_mode(editmode=True)
             self.parent_def_bones_to_root()
+        
 
     def parent_def_bones_to_root(self):
         """Clear DEF bones parental relationships and parent them to root"""
         self.select_bone_by_name(bone_name=self.root_name)
         self.set_selected_bone_active()
-        self.select_all_def_bones(extend=True)
+        self.select_all_bones_by_prefix(
+            bone_prefix=self.def_prefix, extend=False)
         bpy.ops.armature.parent_set(type="OFFSET")
 
-    def parent_tgt_bones_to_root(self):
-        """Parent all TGT bones to root bone for whatever reason"""
-        self.select_bone_by_name(bone_name=self.root_name)
-        self.set_selected_bone_active()
-        self.select_all_tgt_bones(extend=True)
-        bpy.ops.armature.parent_set(type="OFFSET")
 
     def parent_selected_bones_to_root(self):
         """Parent any selected bones/bone in edit mode to root bone"""
@@ -357,10 +358,12 @@ class MVBH_Scripts():
             self.select_bone_by_name(bone_name=bone.name, extend=True)
         bpy.ops.armature.parent_set(type="OFFSET")
 
-    def remove_zeroes_name(self):
-        """Remove zeroes from all the bones in the armature"""
+
+    def replace_in_bone_names(self, value, target=""):
+        """Replaces specified value parameter with target parameter string value"""
         self.toggle_mode(editmode=True)
-        bpy.ops.armature.select_all()
-        self.get_selected_bones()
-        
-        # TODO:FINISH IT
+        #bpy.ops.armature.select_all() # if select everything it can select ghost bones
+        sel_bones = self.get_selected_bones()
+        for bone in sel_bones:
+            bone.name = bone.name.replace(str(value), str(target))
+
