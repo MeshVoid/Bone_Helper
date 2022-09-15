@@ -19,13 +19,13 @@ class MVBH_Main_Menu(bpy.types.Menu):
                     icon="BONE_DATA", text="DEF/TGT")
         layout.menu("VIEW3D_MT_MVBH_Ctl_Menu",
                     icon="BONE_DATA", text="CTL/MCH")
+        layout.menu("VIEW3D_MT_MVBH_Bone_Type_Menu", text="FUNCTION",
+                    icon="GROUP_BONE")
         layout.menu("VIEW3D_MT_MVBH_Suffix_Menu",
                     icon="ARROW_LEFTRIGHT", text="SIDES")
-        layout.menu("VIEW3D_MT_MVBH_Bone_Type_Menu", text="BONE TYPES",
-                    icon="GROUP_BONE")
         layout.menu("VIEW3D_MT_MVBH_Hierarchy_Menu",
-                    icon="CONSTRAINT_BONE", text="CONST")
-        layout.menu("VIEW3D_MT_MVBH_Selection_Menu", icon="FILE_TEXT", text="SELECT")
+                    icon="CONSTRAINT_BONE", text="HIERARCHY")
+        layout.menu("VIEW3D_MT_MVBH_Selection_Menu", icon="RESTRICT_SELECT_OFF", text="SELECT")
         layout.menu("VIEW3D_MT_MVBH_Rename_Menu", icon="FILE_TEXT", text="RENAME")
 
 class MVBH_Def_Menu(bpy.types.Menu):
@@ -94,7 +94,7 @@ class MVBH_Hierarchy_Menu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
         layout.operator("mvbh.set_copy_transforms_hierarchy",
-                        text="CopyTranform Hierarchy", icon="NODETREE")
+                        text="CopyTranform Hierarchy", icon="CON_TRANSLIKE")
 
 
 class MVBH_Bone_Type_Menu(bpy.types.Menu):
@@ -107,7 +107,7 @@ class MVBH_Bone_Type_Menu(bpy.types.Menu):
         layout.operator("mvbh.set_fk_suffix", text="FK", icon="EVENT_F")
         layout.operator("mvbh.set_twk_suffix", text="TWEAK", icon="EVENT_T")
         layout.operator("mvbh.set_swtch_suffix", text="SWTCH", icon="EVENT_S")
-
+        layout.operator("mvbh.set_pole_suffix", text="POLE", icon="EVENT_P")
 
 
 #TODO: FINISH SELECTION AND RENAME MENUS - SEPARATE SELECTION AND 
@@ -119,13 +119,26 @@ class MVBH_Selection_Menu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator("mvbh.select_left", text="Left", icon="EVENT_L")
+        layout.operator("mvbh.select_right", text="Right", icon="EVENT_R")
+        layout.operator("mvbh.select_center", text="Center", icon="EVENT_C")
+        layout.operator("mvbh.select_def", text="DEF", icon="BONE_DATA")
+        layout.operator("mvbh.select_tgt", text="TGT", icon="BONE_DATA")
+        layout.operator("mvbh.select_ctl", text="CTL", icon="BONE_DATA")
+        layout.operator("mvbh.select_mch", text="MCH", icon="BONE_DATA")
+        layout.operator("mvbh.select_ik", text="IK", icon="GROUP_BONE")
+        layout.operator("mvbh.select_fk", text="FK", icon="GROUP_BONE")
+        layout.operator("mvbh.select_twk", text="TWEAK", icon="GROUP_BONE")
+        layout.operator("mvbh.select_swtch", text="SWITCH", icon="GROUP_BONE")
+        layout.operator("mvbh.select_pole", text="POLE", icon="GROUP_BONE")
+
 
 
 class MVBH_Rename_Menu(bpy.types.Menu):
-    bl_idname = "VIEW3d_MT_MVBH_Rename_Menu"
+    bl_idname = "VIEW3D_MT_MVBH_Rename_Menu"
     bl_label = "Rename menu"
     bl_description = "Contains operations for renaming selected bones"
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("mvbh.remove_zeroes", text="Remove Zeroes")
+        layout.operator("mvbh.remove_zeroes", text="Remove 0", icon="LINENUMBERS_ON")

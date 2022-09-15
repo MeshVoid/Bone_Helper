@@ -22,21 +22,23 @@ class MVBH_Scripts():
         self.fk_suffix = "-FK"
         self.twk_suffix = "-TWK"
         self.swtch_suffix = "-SWITCH"
+        self.pole_suffix = "-POLE"
 
         self.left_suffix = "-L"
         self.right_suffix = "-R"
         self.center_suffix = "-C"
 
         # Layer numbers
-        self.root_layer = 31
-        self.prop_layer = 0
-        self.def_layer = 1
-        self.tgt_layer = 2
-        self.ctl_layer = 3
-        self.mch_layer = 4
-        self.ik_layer = 5
-        self.twk_layer = 6
+        self.def_layer = 0
+        self.tgt_layer = 1
+        self.ctl_layer = 2
+        self.mch_layer = 3
+        self.ik_layer = 4
+        self.twk_layer = 5
+        self.pole_layer = 6
         self.swtch_layer = 7
+        self.root_layer = 31
+        self.prop_layer = 30
 
         self.info = MVBH_Messages()
 
@@ -97,6 +99,13 @@ class MVBH_Scripts():
         "Select specific bone/bones by specifying a certain prefix name"
         bpy.ops.object.select_pattern(
             pattern=bone_prefix + "*", case_sensitive=True, extend=extend)
+        selected_bones = self.get_selected_bones()
+        return selected_bones
+
+    def select_all_bones_by_suffix(self, bone_suffix='', extend=False):
+        "Select specific bone/bones by specifying a certain prefix name"
+        bpy.ops.object.select_pattern(
+            pattern="*" + bone_suffix, case_sensitive=True, extend=extend)
         selected_bones = self.get_selected_bones()
         return selected_bones
 

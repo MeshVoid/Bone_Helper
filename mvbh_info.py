@@ -26,8 +26,15 @@ class MVBH_Messages():
             15: "Assigned Tweak bone suffix to selected bones!",
             16: "Assigned Switch bone suffix to selected bones!",
             17: "Zeroes in the names of all armature bones are removed!",
+            18: "Assigned Pole bone suffix to selected bones!",
+            19: "Replaced 'Bone' to 'Leg' in the names of the selected bones",
             20: "Copy Transforms Constraint hierarchy has been assigned to selected bones!",
             21: "Set up copy transforms constraint hierarchy between all Deformation and Target bones of the rig!",
+            22: "Replaced 'Bone' to 'Limb' in the names of the selected bones",
+            23: "Replaced 'Bone' to 'Spine' in the names of the selected bones",
+            24: "Replaced 'Bone' to 'Pelvis' in the names of the selected bones",
+            25: "Replaced 'Bone' to 'Thigh' in the names of the selected bones",         
+            26: "Replaced 'Bone' to 'Shin' in the names of the selected bones",                  
         }
 
         self.errors = {

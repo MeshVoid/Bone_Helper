@@ -305,7 +305,7 @@ class MVBH_OT_set_twk_suffix(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         self.script.set_bone_suffix(self.script.twk_suffix)
         self.script.move_selected_bones_to_layer(
-            self.script.fk_layer, self.script.fk_suffix)
+            self.script.twk_layer, self.script.twk_suffix)
         self.info.display_msg(15)
         self.report({"OPERATOR"}, self.info.messages[15])
         return{"FINISHED"}
@@ -319,8 +319,169 @@ class MVBH_OT_set_swtch_suffix(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.set_bone_suffix(self.script.swtch_suffix)
+        self.script.move_selected_bones_to_layer(
+            self.script.swtch_layer, self.script.swtch_suffix)
         self.info.display_msg(16)
         self.report({"OPERATOR"}, self.info.messages[16])
+        return{"FINISHED"}
+
+
+class MVBH_OT_set_pole_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_pole_suffix"
+    bl_label = "Set Pole bone type suffix"
+    bl_description = "Set Pole bone suffix to currently selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.set_bone_suffix(self.script.pole_suffix)
+        self.script.move_selected_bones_to_layer(
+            self.script.pole_layer, self.script.pole_suffix)
+        self.info.display_msg(18)
+        self.report({"OPERATOR"}, self.info.messages[18])
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_left(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_left"
+    bl_label = "Select Left Side"
+    bl_description = "Select bones with Left side suffix"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.left_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_right(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_right"
+    bl_label = "Select Right Side"
+    bl_description = "Select bones with Right side suffix"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.right_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_center(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_center"
+    bl_label = "Select Center side"
+    bl_description = "Select bones with Center side suffix"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.center_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_def(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_def"
+    bl_label = "Select Deform bones"
+    bl_description = "Select all Deform bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_prefix(
+            bone_prefix=self.script.def_prefix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_tgt(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_tgt"
+    bl_label = "Select Target bones"
+    bl_description = "Select all Target bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_prefix(
+            bone_prefix=self.script.tgt_prefix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_ctl(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_ctl"
+    bl_label = "Select Control bones"
+    bl_description = "Select all Control bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_prefix(
+            bone_prefix=self.script.ctl_prefix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_mch(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_mch"
+    bl_label = "Select Mechanism bones"
+    bl_description = "Select all Mechanism bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_prefix(
+            bone_prefix=self.script.mch_prefix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_ik(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_ik"
+    bl_label = "Select IK bones"
+    bl_description = "Select all IK bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.ik_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_fk(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_fk"
+    bl_label = "Select IK bones"
+    bl_description = "Select all FK bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.fk_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_twk(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_twk"
+    bl_label = "Select Tweak bones"
+    bl_description = "Select all Tweak bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.twk_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_swtch(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_swtch"
+    bl_label = "Select Switch bones"
+    bl_description = "Select all Switch bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.swtch_suffix)
+        return{"FINISHED"}
+
+
+class MVBH_OT_select_pole(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.select_pole"
+    bl_label = "Select Pole bones"
+    bl_description = "Select all Pole bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.select_all_bones_by_suffix(
+            bone_suffix=self.script.pole_suffix)
         return{"FINISHED"}
 
 
@@ -335,6 +496,3 @@ class MVBH_OT_remove_zeroes(bpy.types.Operator, MVBH_Operator):
         self.info.display_msg(17)
         self.report({"OPERATOR"}, self.info.messages[17])
         return{"FINISHED"}
-        
-#TODO: FINISH SELECTION OPERATORS AND RENAME MENUS - SEPARATE SELECTION AND 
-# RENAMING COMMON NAMES
