@@ -5,11 +5,10 @@ from . mvbh_operators import *
 bl_info = {
     "name": "MeshVoid Bone Helper",
     "author": "Chingiz Jumagulov aka MeshVoid, meshvoid.com",
-    "description": """MeshVoid's Bone Helper addon. Here to help 
-    you with all your manual rigging bone managing needs.""",
+    "description": """MeshVoid's Bone Helper addon. Here to help you with all your manual rigging bone management needs.""",
     "blender": (3, 0, 0),
-    "version": (0, 1, 8),
-    "location": "View3D > Armature Edit Mode > Custom Menu Popup",
+    "version": (0, 2, 5),
+    "location": "View3D > Armature Edit\Pose Mode > Context Menu(RightClick)",
     "support": "COMMUNITY",
     "warning": "Report bugs on github: https://github.com/MeshVoid/Bone_Helper",
     "doc_url": "https://github.com/MeshVoid/Bone_Helper/",
@@ -46,9 +45,14 @@ modules = [
     MVBH_OT_set_swtch_suffix,
     MVBH_OT_set_pole_suffix,
     MVBH_OT_set_copy_transforms_hierarchy,
+    MVBH_OT_set_copy_rotation_hierarchy,
+    MVBH_OT_set_copy_location_hierarchy,
+    MVBH_OT_set_copy_scale_hierarchy,
     MVBH_OT_set_def_tgt_hierarchy,
     MVBH_OT_parent_to_root_bone,
     MVBH_OT_remove_zeroes,
+    MVBH_OT_enumerate_bones,
+    MVBH_OT_replace_bone_name,
     MVBH_OT_select_left,
     MVBH_OT_select_right,
     MVBH_OT_select_center,
@@ -64,14 +68,25 @@ modules = [
 ]
 
 
+def add_main_menu(self, context):
+    self.layout.operator(
+        "mvbh.main_menu", text="Bone Helper", icon="BONE_DATA")
+
+
 def register():
     for class_name in modules:
         bpy.utils.register_class(class_name)
+
+    bpy.types.VIEW3D_MT_armature_context_menu.append(add_main_menu)
+    bpy.types.VIEW3D_MT_pose_context_menu.append(add_main_menu)
 
 
 def unregister():
     for class_name in modules:
         bpy.utils.unregister_class(class_name)
+
+    bpy.types.VIEW3D_MT_armature_context_menu.remove(add_main_menu)
+    bpy.types.VIEW3D_MT_pose_context_menu.remove(add_main_menu)
 
 
 if __name__ == "__main__":

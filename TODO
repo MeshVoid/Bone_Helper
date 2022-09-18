@@ -1,11 +1,12 @@
 
 TODO:
+  
   ✔ * Refactor module names, maybe also class names? @done(22-09-04 22:09)
-  - Make Main Menu appear in Armature context menu when you right click in armature mode
-  - Add Copy Rotation Hierarchy
-  - Add Copy Location Hierarchy
-  - Add Copy Scale Hierarchy
-
+  ✔ Make Main Menu appear in Armature context menu when you right click in armature mode @done(22-09-16 20:07)
+  ✔ Add Copy Rotation Hierarchy @done(22-09-16 22:46)
+  ✔ Add Copy Location Hierarchy @done(22-09-18 23:16)
+  ✔ Add Copy Scale Hierarchy @done(22-09-18 23:16)
+  ✔ To rename menu add operator to enumerate the bones @done(22-09-18 23:16)
   ✔ Identify IK and FK bone workflow and better naming convention, show it in operators and UI @done(22-09-14 21:17)
   ✔ Add Quality of Life things like better selections by bone groups: like selecting all bones by prefix name, removing zeroes in the name of bones @done(22-09-15 15:05)
   ✔ Assign layer assignment logic to every set_bonetype method in mvbh_scripts class @done(22-09-14 21:10)
@@ -15,3 +16,12 @@ TODO:
   ✔ * Write logic to show info and error messages in info view and viewport @done(22-09-04 21:44) #partially though no info view yet, but will be
   ✔ Make sure appropriate methods utilise info messages and inform user @done(22-09-07 23:25)
   - Figure out the way to assign custom parameters from the settings part of the addon to it's method part.
+  ✔ Fix problem with add_bones and endings with no side suffixes @done(22-09-19 01:22)
+
+
+KNOWN PROBLEMS:
+  - Problem occurs if there is some orphan data, like deleted armature, then layer names might not be assigned properly, to fix it remove orphan data before proceeding
+
+  - When using Add BoneGroup operator it inherits parental information and constraints. Question is, should we get rid of that information automatically or not?
+
+  ✔ When using Add BoneGroup operator without marking bones with the side suffix, it removes number suffixes that appear after duplication and cause naming problems. @done(22-09-19 01:22)

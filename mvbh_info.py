@@ -29,18 +29,21 @@ class MVBH_Messages():
             18: "Assigned Pole bone suffix to selected bones!",
             19: "Replaced 'Bone' to 'Leg' in the names of the selected bones",
             20: "Copy Transforms Constraint hierarchy has been assigned to selected bones!",
-            21: "Set up copy transforms constraint hierarchy between all Deformation and Target bones of the rig!",
-            22: "Replaced 'Bone' to 'Limb' in the names of the selected bones",
-            23: "Replaced 'Bone' to 'Spine' in the names of the selected bones",
-            24: "Replaced 'Bone' to 'Pelvis' in the names of the selected bones",
-            25: "Replaced 'Bone' to 'Thigh' in the names of the selected bones",         
-            26: "Replaced 'Bone' to 'Shin' in the names of the selected bones",                  
+            21: "Set up Copy Transforms Constraint hierarchy between all Deformation and Target bones of the rig!",
+            22: "Copy Rotation Constraint hierarchy has been assigned to selected bones!",
+            23: "Copy Location Constraint hierarchy has been assigned to selected bones!",
+            24: "Copy Location Scale hierarchy has been assigned to selected bones!",
+            25: "Replaced 'Bone' to 'Thigh' in the names of the selected bones",
+            26: "Replaced 'Bone' to 'Shin' in the names of the selected bones",
+            27: "Added new Target bones based on the selection with appropriate properties!",
         }
 
         self.errors = {
             0: "No bones are selected in the viewport, please select some!",
             1: "Make sure you are in either Edit or Pose armature modes!",
             2: "No object is selected, therefore I cannot proceed!",
+            3: "There is already a Root bone in current armature, delete it before adding a new one!",
+            4: "There is already a Property bone in current armature, delete it before adding a new one!",
 
         }
 
