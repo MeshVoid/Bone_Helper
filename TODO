@@ -2,6 +2,10 @@
 TODO:
   ✔ * Refactor module names, maybe also class names? @done(22-09-04 22:09)
   - Make Main Menu appear in Armature context menu when you right click in armature mode
+  - Add Copy Rotation Hierarchy
+  - Add Copy Location Hierarchy
+  - Add Copy Scale Hierarchy
+
   ✔ Identify IK and FK bone workflow and better naming convention, show it in operators and UI @done(22-09-14 21:17)
   ✔ Add Quality of Life things like better selections by bone groups: like selecting all bones by prefix name, removing zeroes in the name of bones @done(22-09-15 15:05)
   ✔ Assign layer assignment logic to every set_bonetype method in mvbh_scripts class @done(22-09-14 21:10)
