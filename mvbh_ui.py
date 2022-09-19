@@ -29,6 +29,7 @@ class MVBH_Main_Menu(bpy.types.Menu):
                     icon="RESTRICT_SELECT_OFF", text="SELECT")
         layout.menu("VIEW3D_MT_MVBH_Rename_Menu",
                     icon="FILE_TEXT", text="RENAME")
+        layout.operator("mvbh.remove_ghost_bones", text="Remove Ghosts",icon="CANCEL")
 
 
 class MVBH_Def_Menu(bpy.types.Menu):
@@ -153,66 +154,96 @@ class MVBH_Rename_Menu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
+        col_flow = layout.column_flow(columns=2, align=False)
+        grid = layout.grid_flow(row_major=True, columns=2, even_columns=True, even_rows=True, align=True)
         row = layout.row(align=True)
-        layout.operator("mvbh.remove_zeroes", text="Remove 0",
-                        icon="LINENUMBERS_ON")
-        layout.operator("mvbh.enumerate_bones",
-                        text="Enumerate", icon="LINENUMBERS_ON")
-        layout.separator()
-
+        split = layout.split(align=True)
+        
+        col_flow.operator(
+            "mvbh.remove_zeroes", text="Remove 0", icon="LINENUMBERS_ON")
         # List of names is here ->  MVBH_OT_replace_bone_name in operators.py
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Spine")
+        col_flow.separator()
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Spine",icon="FILE_TEXT")
         props.new_name = "Spine"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Neck")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Torso",icon="FILE_TEXT")
+        props.new_name = "Torso"
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Chest",icon="FILE_TEXT")
+        props.new_name = "Chest"
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Neck",icon="FILE_TEXT")
         props.new_name = "Neck"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Head")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Head",icon="FILE_TEXT")
         props.new_name = "Head"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Jaw")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Jaw",icon="FILE_TEXT")
         props.new_name = "Jaw"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Limb")
-        props.new_name = "Limb"
-        layout.separator()
-        props = layout.operator(
-                            "mvbh.replace_bone_name",text="Bone->Shoulder")
+        col_flow.separator()
+        props = col_flow.operator(
+            "mvbh.replace_bone_name",text="Bone->Shoulder",icon="FILE_TEXT")
         props.new_name = "Shoulder"
-        props = layout.operator(
-                            "mvbh.replace_bone_name", text="Bone->UpperLimb")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Limb",icon="FILE_TEXT")
+        props.new_name = "Limb"
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->UpperLimb",icon="FILE_TEXT")
         props.new_name = "UpperLimb"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Arm")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Arm",icon="FILE_TEXT")
         props.new_name = "Arm"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Forearm")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Forearm",icon="FILE_TEXT")
         props.new_name = "Forearm"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Hand")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Hand",icon="FILE_TEXT")
         props.new_name = "Hand"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Finger")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Finger", icon="FILE_TEXT")
         props.new_name = "Finger"
-        layout.separator()
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Pelvis")
+        col_flow.operator(
+            "mvbh.enumerate_bones", text="Enumerate", icon="LINENUMBERS_ON")
+        col_flow.separator()
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Pelvis", icon="FILE_TEXT")
         props.new_name = "Pelvis"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Hip")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Hip", icon="FILE_TEXT")
         props.new_name = "Hip"
-        props = layout.operator(
-                        "mvbh.replace_bone_name",text="Bone->LowerLimb")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name",text="Bone->LowerLimb", icon="FILE_TEXT")
         props.new_name = "LowerLimb"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Leg")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Leg", icon="FILE_TEXT")
         props.new_name = "Leg"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Thigh")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Thigh", icon="FILE_TEXT")
         props.new_name = "Thigh"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Knee")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Knee", icon="FILE_TEXT")
         props.new_name = "Knee"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Heel")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Heel", icon="FILE_TEXT")
         props.new_name = "Heel"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Ankle")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Ankle", icon="FILE_TEXT")
         props.new_name = "Ankle"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Toe")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Toe", icon="FILE_TEXT")
         props.new_name = "Toe"
-        layout.separator()
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Tail")
+        col_flow.separator()
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Tail", icon="FILE_TEXT")
         props.new_name = "Tail"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Ear")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Ear", icon="FILE_TEXT")
         props.new_name = "Ear"
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Claw")
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Claw", icon="FILE_TEXT")
         props.new_name = "Claw"
-        layout.separator
-        props = layout.operator("mvbh.replace_bone_name", text="Bone->Eye")
+        col_flow.separator
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Eye", icon="FILE_TEXT")
         props.new_name = "Eye"       

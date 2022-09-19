@@ -17,6 +17,7 @@ TODO:
   ✔ Make sure appropriate methods utilise info messages and inform user @done(22-09-07 23:25)
   - Figure out the way to assign custom parameters from the settings part of the addon to it's method part.
   ✔ Fix problem with add_bones and endings with no side suffixes @done(22-09-19 01:22)
+  - Write the docs!
 
 
 KNOWN PROBLEMS:

@@ -474,7 +474,6 @@ class MVBH_Scripts():
     def replace_in_bone_names(self, value, target=""):
         """Replaces specified value parameter with target parameter string value"""
         self.toggle_mode(editmode=True)
-        # bpy.ops.armature.select_all() # if select everything it can select ghost bones
         sel_bones = self.get_selected_bones()
         for bone in sel_bones:
             bone.name = bone.name.replace(str(value), str(target))
@@ -487,5 +486,9 @@ class MVBH_Scripts():
             digitless_name = "".join((x for x in bone.name if not x.isdigit()))
             if "." in digitless_name:
                 digitless_name = digitless_name.replace(".", "")
-            bone.name = f"{digitless_name}{str(i)}"
+            bone.name = f"{digitless_name}{i}"
             i += 1
+
+    def delete_orphan_data(self):
+        "Delete all orphan data"
+        bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)

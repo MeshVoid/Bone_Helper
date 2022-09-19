@@ -740,11 +740,25 @@ class MVBH_OT_replace_bone_name(bpy.types.Operator, MVBH_Operator):
         if self.check_errors():
             return {"CANCELLED"}
         selected_bones = self.script.get_selected_bones()
-        check_list = ["Spine","Neck","Head","Jaw","Limb","Shoulder","UpperLimb","Arm","Forearm","Hand","Finger","Pelvis","Hip","LowerLimb","Leg","Thigh","Knee","Heel","Ankle","Toe","Tail","Ear","Claw","Eye"]
+        check_list = ["Spine","Neck","Head","Jaw","Limb","Shoulder","UpperLimb","Arm","Forearm","Hand","Finger","Pelvis","Hip","LowerLimb","Leg","Thigh","Knee","Heel","Ankle","Toe","Tail","Ear","Claw","Eye","Torso","Chest",]
         for bone in selected_bones:
             bone.name = bone.name.replace(self.target_name, self.new_name)
             if "Bone" not in bone.name:
                 for i in check_list:
-                    if i in bone.name:
+                    if i.lower() in bone.name.lower():
                         bone.name = bone.name.replace(i, self.new_name)
+        return{"FINISHED"}
+
+
+
+class MVBH_OT_remove_ghost_bones(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.remove_ghost_bones"
+    bl_label = "Remove Ghost bones"
+    bl_description = "Purge previously modified or delete bone data, to fix renaming issues"
+    bl_option = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.toggle_mode(objectmode=True)
+        self.script.delete_orphan_data()
+        self.script.toggle_mode(editmode=True)
         return{"FINISHED"}
