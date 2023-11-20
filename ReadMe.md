@@ -1,6 +1,8 @@
 ___
 # **MeshVoid's Bone Helper Addon For Blender**
 
+## Disclaimer! Currently only version 0.3.0 available which supports only Blender 3.+ versions. I am currently in the process of rewriting this addon to be compatible with 4.0.
+
 ## **Installation** | **[Documentation](#DOCUMENATION)** | **DONATE**
 
 ### **Installation**
