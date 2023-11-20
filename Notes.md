@@ -17,9 +17,9 @@ IK. IK_ IK-
 
 FK. FK_ FK-
 
-and additional abbreviations include: ORG. ORG_ 
+and additional abbreviations include: ORG. ORG_
 
-*Bone types:*     
+*Bone types:*
 
 - ROOT (Single main bone to tie the whole armature together)
 
@@ -42,7 +42,7 @@ ___
 - Duplicate The created bone hierarchy rename prefixes of bones from DEF to TGT and get rid of .001 suffix on duplicatd TGT bones, make sure that TGT don't have 'deform' properties
 
 - Assign Copy Transform constraints to DEF bones so that they would copy TGT bones.
-
+  
 - Remove all the parenting from DEF bones. TGT Bones retain initial parenting!
 
 - Parent DEF bones to the ROOT bones
@@ -64,12 +64,9 @@ Preferred structure of Bone layers for a simple bipedal rig:
 
 ![BoneLayers](images/Layers.jpg)
 
-
-
 ### **Biped rigging tips:**
 
 Leg rigging (Reverse foot rig mechanism)
-
 
 **Leg naming convention**
 

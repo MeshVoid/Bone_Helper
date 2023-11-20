@@ -17,12 +17,13 @@ TODO:
   ✔ Make sure appropriate methods utilise info messages and inform user @done(22-09-07 23:25)
   - Figure out the way to assign custom parameters from the settings part of the addon to it's method part.
   ✔ Fix problem with add_bones and endings with no side suffixes @done(22-09-19 01:22)
-  - Write the docs!
+  ✔ Write the docs! @done(22-09-23 01:23)
 
 
 KNOWN PROBLEMS:
-  - Problem occurs if there is some orphan data, like deleted armature, then layer names might not be assigned properly, to fix it remove orphan data before proceeding
+  ✔ Problem occurs if there is some orphan data, like deleted armature, then layer names might not be assigned properly, to fix it remove orphan data before proceeding @done(22-09-23 00:50)
 
-  - When using Add BoneGroup operator it inherits parental information and constraints. Question is, should we get rid of that information automatically or not?
+✔ @done(22-09-23 00:50)
+  ✔ When using Add BoneGroup operator it inherits parental information and constraints. Question is, should we get rid of that information automatically or not? @done(22-09-23 00:50)
 
   ✔ When using Add BoneGroup operator without marking bones with the side suffix, it removes number suffixes that appear after duplication and cause naming problems. @done(22-09-19 01:22)

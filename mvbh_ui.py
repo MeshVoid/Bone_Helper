@@ -29,7 +29,8 @@ class MVBH_Main_Menu(bpy.types.Menu):
                     icon="RESTRICT_SELECT_OFF", text="SELECT")
         layout.menu("VIEW3D_MT_MVBH_Rename_Menu",
                     icon="FILE_TEXT", text="RENAME")
-        layout.operator("mvbh.remove_ghost_bones", text="Remove Ghosts",icon="CANCEL")
+        layout.operator("mvbh.remove_ghost_bones",
+                        text="Remove Ghosts", icon="CANCEL")
 
 
 class MVBH_Def_Menu(bpy.types.Menu):
@@ -49,6 +50,8 @@ class MVBH_Def_Menu(bpy.types.Menu):
         layout.separator()
         layout.operator("mvbh.set_def_tgt_hierarchy",
                         text="DEF->TGT->ROOT", icon="CONSTRAINT_BONE")
+        layout.operator("mvbh.remove_bone_prefix",
+                        text="Remove", icon="CANCEL")
 
 
 class MVBH_Ctl_Menu(bpy.types.Menu):
@@ -62,6 +65,8 @@ class MVBH_Ctl_Menu(bpy.types.Menu):
         layout.separator()
         layout.operator("mvbh.add_mch_bones", text="ADD MCH", icon="BONE_DATA")
         layout.operator("mvbh.set_mch_bones", text="SET MCH", icon="BONE_DATA")
+        layout.operator("mvbh.remove_bone_prefix",
+                        text="Remove", icon="CANCEL")
 
 
 class MVBH_Suffix_Menu(bpy.types.Menu):
@@ -77,6 +82,8 @@ class MVBH_Suffix_Menu(bpy.types.Menu):
         layout.operator("mvbh.set_right_suffix", text="Right", icon="EVENT_R")
         layout.operator("mvbh.set_center_suffix",
                         text="Center", icon="EVENT_C")
+        layout.operator("mvbh.remove_side_suffix",
+                        text="Remove", icon="CANCEL")
 
 
 class MVBH_Root_Menu(bpy.types.Menu):
@@ -98,14 +105,17 @@ class MVBH_Hierarchy_Menu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("mvbh.set_copy_transforms_hierarchy",
-                        text="CopyTranform Hierarchy", icon="CON_TRANSLIKE")
-        layout.operator("mvbh.set_copy_rotation_hierarchy",
-                        text="CopyRotation Hierarchy", icon="CON_ROTLIKE")
-        layout.operator("mvbh.set_copy_location_hierarchy",
-                        text="CopyLocation Hierarchy", icon="CON_LOCLIKE")
-        layout.operator("mvbh.set_copy_scale_hierarchy",
-                        text="CopyScale Hierarchy", icon="CON_SIZELIKE")
+        layout.operator(
+            "mvbh.set_copy_transforms_hierarchy", text="CopyTranform Hierarchy", icon="CON_TRANSLIKE")
+        layout.operator(
+            "mvbh.set_copy_rotation_hierarchy", text="CopyRotation Hierarchy", icon="CON_ROTLIKE")
+        layout.operator(
+            "mvbh.set_copy_location_hierarchy", text="CopyLocation Hierarchy", icon="CON_LOCLIKE")
+        layout.operator(
+            "mvbh.set_copy_scale_hierarchy", text="CopyScale Hierarchy", icon="CON_SIZELIKE")
+        layout.operator("mvbh.set_ik_chain", text="IK Chain", icon="CON_KINEMATIC")
+        layout.operator(
+            "mvbh.remove_all_constraints", text="Remove", icon="CANCEL")
 
 
 class MVBH_Bone_Type_Menu(bpy.types.Menu):
@@ -119,6 +129,8 @@ class MVBH_Bone_Type_Menu(bpy.types.Menu):
         layout.operator("mvbh.set_twk_suffix", text="TWEAK", icon="EVENT_T")
         layout.operator("mvbh.set_swtch_suffix", text="SWTCH", icon="EVENT_S")
         layout.operator("mvbh.set_pole_suffix", text="POLE", icon="EVENT_P")
+        layout.operator("mvbh.remove_function_suffix",
+                        text="Remove", icon="CANCEL")
 
 
 # TODO: FINISH SELECTION AND RENAME MENUS - SEPARATE SELECTION AND
@@ -155,54 +167,58 @@ class MVBH_Rename_Menu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
         col_flow = layout.column_flow(columns=2, align=False)
-        grid = layout.grid_flow(row_major=True, columns=2, even_columns=True, even_rows=True, align=True)
+        grid = layout.grid_flow(row_major=True, columns=2,
+                                even_columns=True, even_rows=True, align=True)
         row = layout.row(align=True)
         split = layout.split(align=True)
-        
+
         col_flow.operator(
             "mvbh.remove_zeroes", text="Remove 0", icon="LINENUMBERS_ON")
         # List of names is here ->  MVBH_OT_replace_bone_name in operators.py
         col_flow.separator()
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Spine",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Spine", icon="FILE_TEXT")
         props.new_name = "Spine"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Torso",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Torso", icon="FILE_TEXT")
         props.new_name = "Torso"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Chest",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Chest", icon="FILE_TEXT")
         props.new_name = "Chest"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Neck",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Neck", icon="FILE_TEXT")
         props.new_name = "Neck"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Head",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Head", icon="FILE_TEXT")
         props.new_name = "Head"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Jaw",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Jaw", icon="FILE_TEXT")
         props.new_name = "Jaw"
         col_flow.separator()
         props = col_flow.operator(
-            "mvbh.replace_bone_name",text="Bone->Shoulder",icon="FILE_TEXT")
-        props.new_name = "Shoulder"
+            "mvbh.replace_bone_name", text="Bone->Upper_limb", icon="FILE_TEXT")
+        props.new_name = "Upper_limb"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Limb",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Limb", icon="FILE_TEXT")
         props.new_name = "Limb"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->UpperLimb",icon="FILE_TEXT")
-        props.new_name = "UpperLimb"
+            "mvbh.replace_bone_name", text="Bone->Shoulder", icon="FILE_TEXT")
+        props.new_name = "Shoulder"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Arm",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Arm", icon="FILE_TEXT")
         props.new_name = "Arm"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Forearm",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Forearm", icon="FILE_TEXT")
         props.new_name = "Forearm"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Hand",icon="FILE_TEXT")
+            "mvbh.replace_bone_name", text="Bone->Hand", icon="FILE_TEXT")
         props.new_name = "Hand"
         props = col_flow.operator(
             "mvbh.replace_bone_name", text="Bone->Finger", icon="FILE_TEXT")
         props.new_name = "Finger"
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Thumb", icon="FILE_TEXT")
+        props.new_name = "Thumb"
         col_flow.operator(
             "mvbh.enumerate_bones", text="Enumerate", icon="LINENUMBERS_ON")
         col_flow.separator()
@@ -213,8 +229,8 @@ class MVBH_Rename_Menu(bpy.types.Menu):
             "mvbh.replace_bone_name", text="Bone->Hip", icon="FILE_TEXT")
         props.new_name = "Hip"
         props = col_flow.operator(
-            "mvbh.replace_bone_name",text="Bone->LowerLimb", icon="FILE_TEXT")
-        props.new_name = "LowerLimb"
+            "mvbh.replace_bone_name", text="Bone->Lower_limb", icon="FILE_TEXT")
+        props.new_name = "Lower_limb"
         props = col_flow.operator(
             "mvbh.replace_bone_name", text="Bone->Leg", icon="FILE_TEXT")
         props.new_name = "Leg"
@@ -225,11 +241,14 @@ class MVBH_Rename_Menu(bpy.types.Menu):
             "mvbh.replace_bone_name", text="Bone->Knee", icon="FILE_TEXT")
         props.new_name = "Knee"
         props = col_flow.operator(
-            "mvbh.replace_bone_name", text="Bone->Heel", icon="FILE_TEXT")
-        props.new_name = "Heel"
+            "mvbh.replace_bone_name", text="Bone->Shin", icon="FILE_TEXT")
+        props.new_name = "Shin"
         props = col_flow.operator(
             "mvbh.replace_bone_name", text="Bone->Ankle", icon="FILE_TEXT")
         props.new_name = "Ankle"
+        props = col_flow.operator(
+            "mvbh.replace_bone_name", text="Bone->Foot", icon="FILE_TEXT")
+        props.new_name = "Foot"
         props = col_flow.operator(
             "mvbh.replace_bone_name", text="Bone->Toe", icon="FILE_TEXT")
         props.new_name = "Toe"
@@ -246,4 +265,4 @@ class MVBH_Rename_Menu(bpy.types.Menu):
         col_flow.separator
         props = col_flow.operator(
             "mvbh.replace_bone_name", text="Bone->Eye", icon="FILE_TEXT")
-        props.new_name = "Eye"       
+        props.new_name = "Eye"

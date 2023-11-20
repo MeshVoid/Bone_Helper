@@ -12,17 +12,22 @@ class MVBH_Operator():
         global replaced_bone_name
         self.replaced_bone_name = ""
 
-
     def check_errors(self):
-        if not bool(bpy.context.selected_objects):
-            self.info.display_err(2)
-            self.report({"ERROR"}, self.info.errors[2])
-            return {"CANCELLED"}
-        if not bool(bpy.context.selected_bones):
-            self.info.display_err(0)
-            self.report({"ERROR"}, self.info.errors[0])
-            return {"CANCELLED"}
-
+        if bpy.context.mode == "EDIT_ARMATURE":
+            if not bool(bpy.context.selected_bones):
+                self.info.display_err(2)
+                self.report({"ERROR"}, self.info.errors[2])
+                return {"CANCELLED"}
+        if bpy.context.mode == "EDIT_ARMATURE":
+            if not bool(bpy.context.selected_bones):
+                self.info.display_err(0)
+                self.report({"ERROR"}, self.info.errors[0])
+                return {"CANCELLED"}
+        if bpy.context.mode == "POSE":
+            if not bool(bpy.context.selected_pose_bones):
+                self.info.display_err(0)
+                self.report({"ERROR"}, self.info.errors[0])
+                return {"CANCELLED"}
 
 
 class MVBH_OT_main_menu(bpy.types.Operator):
@@ -187,6 +192,19 @@ class MVBH_OT_set_center_suffix(bpy.types.Operator, MVBH_Operator):
         return {"FINISHED"}
 
 
+class MVBH_OT_remove_side_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.remove_side_suffix"
+    bl_label = "Remove side suffix"
+    bl_description = "Remove side suffix of selected bones if any assigned to the bone"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        if self.check_errors():
+            return{"CANCELLED"}
+        self.script.delete_side_suffixes()
+        return {"FINISHED"}
+
+
 class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
     bl_idname = "mvbh.add_root_bone"
     bl_label = "Add Root bone"
@@ -195,7 +213,7 @@ class MVBH_OT_add_root_bone(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.toggle_mode(objectmode=True)
-        if self.script.root_name in bpy.data.armatures[self.script.get_selected_armature()].bones.keys():
+        if self.script.root_name in bpy.data.armatures[self.script.get_armature_name()].bones.keys():
             self.info.display_err(3)
             self.report({"ERROR"}, self.info.errors[3])
             self.script.toggle_mode(editmode=True)
@@ -217,9 +235,15 @@ class MVBH_OT_add_prop_bone(bpy.types.Operator, MVBH_Operator):
 
     def execute(self, context):
         self.script.toggle_mode(objectmode=True)
-        if self.script.prop_name in bpy.data.armatures[self.script.get_selected_armature()].bones.keys():
+        if self.script.prop_name in bpy.data.armatures[self.script.get_armature_name()].bones.keys():
             self.info.display_err(4)
             self.report({"ERROR"}, self.info.errors[4])
+            self.script.toggle_mode(editmode=True)
+            return{"CANCELLED"}
+        self.script.toggle_mode(objectmode=True)
+        if self.script.root_name not in bpy.data.armatures[self.script.get_armature_name()].bones.keys():
+            self.info.display_err(7)
+            self.report({"ERROR"}, self.info.errors[7])
             self.script.toggle_mode(editmode=True)
             return{"CANCELLED"}
         self.script.add_prop_bone()
@@ -356,7 +380,7 @@ class MVBH_OT_set_copy_transforms_hierarchy(bpy.types.Operator, MVBH_Operator):
             return {"CANCELLED"}
         self.script.set_copy_constraint_hierarchy(
             copy_trans=True, local_space=self.use_local_space
-            )
+        )
         self.info.display_msg(20)
         self.report({"OPERATOR"}, self.info.messages[20])
         return{"FINISHED"}
@@ -379,7 +403,7 @@ class MVBH_OT_set_copy_rotation_hierarchy(bpy.types.Operator, MVBH_Operator):
             return {"CANCELLED"}
         self.script.set_copy_constraint_hierarchy(
             copy_rot=True, local_space=self.use_local_space
-            )
+        )
         self.info.display_msg(22)
         self.report({"OPERATOR"}, self.info.messages[22])
         return{"FINISHED"}
@@ -402,7 +426,7 @@ class MVBH_OT_set_copy_location_hierarchy(bpy.types.Operator, MVBH_Operator):
             return {"CANCELLED"}
         self.script.set_copy_constraint_hierarchy(
             copy_loc=True, local_space=self.use_local_space
-            )
+        )
         self.info.display_msg(23)
         self.report({"OPERATOR"}, self.info.messages[23])
         return{"FINISHED"}
@@ -425,16 +449,70 @@ class MVBH_OT_set_copy_scale_hierarchy(bpy.types.Operator, MVBH_Operator):
             return {"CANCELLED"}
         self.script.set_copy_constraint_hierarchy(
             copy_scale=True, local_space=self.use_local_space
-            )
+        )
         self.info.display_msg(24)
         self.report({"OPERATOR"}, self.info.messages[24])
         return{"FINISHED"}
 
 
+class MVBH_OT_set_ik_chain(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.set_ik_chain"
+    bl_label = "Set IK Chain"
+    bl_description = "Add IK chain to bones with: MCH-prefix and IK-suffix, CTL-prefix and IK-suffix, CTL-prefix and Pole-suffix"
+    bl_options = {"REGISTER", "UNDO"}
+
+    chain_len: bpy.props.IntProperty(
+        name="Chain Length",
+        description="Size of IK Chain",
+        default=2,
+    )
+
+    def execute(self, context):
+        if self.check_errors():
+            return{"CANCELLED"}
+        if len(self.script.get_selected_bones()) != 3:
+            self.script.info.display_err(8)
+            self.report({"ERROR"}, self.info.errors[8])
+            return{"CANCELLED"}
+        selection = self.script.get_selected_bones()
+        mch_check = False
+        ctl_check = False
+        pole_check = False
+        for bone in selection:
+            if self.script.mch_prefix in bone.name and self.script.ik_suffix in bone.name:
+                mch_check = True
+            elif self.script.ctl_prefix in bone.name and self.script.ik_suffix in bone.name:
+                ctl_check = True
+            elif self.script.ctl_prefix in bone.name and self.script.pole_suffix in bone.name:
+                pole_check = True
+        if mch_check and ctl_check and pole_check:
+            self.script.add_ik_hierarchy(chain_len=self.chain_len)
+            self.script.info.display_msg(31)
+            self.report({"OPERATOR"}, self.info.messages[31])
+            return{"FINISHED"}
+        else:
+            self.script.info.display_err(9)
+            self.report({"ERROR"}, self.info.errors[9])
+            return{"CANCELLED"}
+
+
+class MVBH_OT_remove_all_constraints(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.remove_all_constraints"
+    bl_label = "Remove all constraints"
+    bl_description = "Remove all constraints on selected bones"
+
+    def execute(self, context):
+        if self.check_errors():
+            return {"CANCELLED"}
+        self.script.delete_all_constraints()
+        return{"FINISHED"}
+
+
+
 class MVBH_OT_set_def_tgt_hierarchy(bpy.types.Operator, MVBH_Operator):
     bl_idname = "mvbh.set_def_tgt_hierarchy"
     bl_label = "Set Deform and Target bone Hierarchy"
-    bl_description = "Set copy transforms constraints to all Deform and Target bones in armature and parent Deform bones to Root bone"
+    bl_description = "Set copy transforms constraints to all currently selected Deform and Target bones. Parent Deform bones to Root bone"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -455,6 +533,12 @@ class MVBH_OT_parent_to_root_bone(bpy.types.Operator, MVBH_Operator):
     def execute(self, context):
         if self.check_errors():
             return {"CANCELLED"}
+        self.script.toggle_mode(objectmode=True)
+        if self.script.root_name not in bpy.data.armatures[self.script.get_armature_name()].bones.keys():
+            self.info.display_err(6)
+            self.report({"ERROR"}, self.info.errors[6])
+            self.script.toggle_mode(editmode=True)
+            return{"CANCELLED"}
         self.script.parent_selected_bones_to_root()
         self.info.display_msg(7)
         self.report({"OPERATOR"}, self.info.messages[7])
@@ -489,7 +573,7 @@ class MVBH_OT_set_fk_suffix(bpy.types.Operator, MVBH_Operator):
             return {"CANCELLED"}
         self.script.set_bone_suffix(self.script.fk_suffix)
         self.script.move_selected_bones_to_layer(
-            self.script.ctl_layer, self.script.ctl_suffix)
+            self.script.ctl_layer, self.script.ctl_prefix)
         self.info.display_msg(14)
         self.report({"OPERATOR"}, self.info.messages[14])
         return{"FINISHED"}
@@ -545,6 +629,18 @@ class MVBH_OT_set_pole_suffix(bpy.types.Operator, MVBH_Operator):
         self.report({"OPERATOR"}, self.info.messages[18])
         return{"FINISHED"}
 
+
+class MVBH_OT_remove_function_suffix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.remove_function_suffix"
+    bl_label = "Remove bone function suffix"
+    bl_description = "Remove bone function suffix if one is currently assigned to the selected bones"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        if self.check_errors():
+            return {"CANCELLED"}
+        self.script.delete_function_suffixes()
+        return{"FINISHED"}
 
 class MVBH_OT_select_left(bpy.types.Operator, MVBH_Operator):
     bl_idname = "mvbh.select_left"
@@ -692,14 +788,27 @@ class MVBH_OT_select_pole(bpy.types.Operator, MVBH_Operator):
 
 class MVBH_OT_remove_zeroes(bpy.types.Operator, MVBH_Operator):
     bl_idname = "mvbh.remove_zeroes"
-    bl_label = "Remove Zeroes in bone names"
-    bl_description = "Get rid of Zeroes in selected bones names"
+    bl_label = "Remove Zeroes"
+    bl_description = "Get rid of Zeroes in selected bones names (OPTIONAL: all numbers)"
     bl_options = {"REGISTER", "UNDO"}
+
+    all_num: bpy.props.BoolProperty(
+        name="Remove All Numbers",
+        description="Remove all numbers in the selected bones",
+        default=False,
+    )
 
     def execute(self, context):
         if self.check_errors():
             return {"CANCELLED"}
         self.script.replace_in_bone_names(value="0", target="")
+        if self.all_num:
+            sel_bones = self.script.get_selected_bones()
+            for bone in sel_bones:
+                digitless_name = "".join((x for x in bone.name if not x.isdigit()))
+                if "." in digitless_name:
+                    digitless_name = digitless_name.replace(".", "")
+                bone.name = f"{digitless_name}"
         self.info.display_msg(17)
         self.report({"OPERATOR"}, self.info.messages[17])
         return{"FINISHED"}
@@ -740,15 +849,29 @@ class MVBH_OT_replace_bone_name(bpy.types.Operator, MVBH_Operator):
         if self.check_errors():
             return {"CANCELLED"}
         selected_bones = self.script.get_selected_bones()
-        check_list = ["Spine","Neck","Head","Jaw","Limb","Shoulder","UpperLimb","Arm","Forearm","Hand","Finger","Pelvis","Hip","LowerLimb","Leg","Thigh","Knee","Heel","Ankle","Toe","Tail","Ear","Claw","Eye","Torso","Chest",]
+        check_list = ["Spine", "Neck", "Head", "Jaw", "Shoulder", "Upper_limb", "Arm", "Forearm", "Hand", "Finger", "Pelvis", "Hip",
+                      "Lower_limb", "Leg", "Thigh", "Knee", "Shin", "Ankle", "Toe", "Tail", "Ear", "Claw", "Eye", "Torso", "Chest", "Limb", "Foot"]
         for bone in selected_bones:
-            bone.name = bone.name.replace(self.target_name, self.new_name)
             if "Bone" not in bone.name:
                 for i in check_list:
-                    if i.lower() in bone.name.lower():
+                    if i in bone.name:
                         bone.name = bone.name.replace(i, self.new_name)
+            elif "Bone" in bone.name:
+                bone.name = bone.name.replace(self.target_name, self.new_name)
+            else:
+                pass
         return{"FINISHED"}
 
+
+class MVBH_OT_remove_bone_prefix(bpy.types.Operator, MVBH_Operator):
+    bl_idname = "mvbh.remove_bone_prefix"
+    bl_label = "Remove prefix"
+    bl_description = "Delete bone prefix if it corresponds to standard naming convention"
+    bl_option = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        self.script.remove_bone_prefix()
+        return{"FINISHED"}
 
 
 class MVBH_OT_remove_ghost_bones(bpy.types.Operator, MVBH_Operator):

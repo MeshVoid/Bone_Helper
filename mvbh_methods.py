@@ -76,8 +76,15 @@ class MVBH_Scripts():
                 edit_bones.append(bone)
             return edit_bones
 
-    def get_selected_armature(self):
-        """Return the name of a currently selected armature"""
+    def get_armature_name(self):
+        """Return the name of currently selected Armature data value!"""
+        current_object = bpy.context.object
+        if current_object.type == "ARMATURE":
+            armature = current_object.data
+        return armature.name
+
+    def get_armature_object_name(self):
+        """Return the name of a currently selected Armature Object!"""
         selected_armature = bpy.context.view_layer.objects.active.name
         return selected_armature
 
@@ -164,7 +171,6 @@ class MVBH_Scripts():
                 bpy.ops.object.editmode_toggle()
             elif bpy.context.mode == "POSE":
                 bpy.ops.object.posemode_toggle()
-                
 
     def set_xyz_rotation_mode(self, toggle_editmode=True):
         """Set selected bones rotation mode to 'XYZ' instead of quaternions"""
@@ -176,7 +182,7 @@ class MVBH_Scripts():
 
     def move_selected_bones_to_layer(self, layer_number, layer_name):
         """Set bones list to a specified bone layer and assign a layer_name"""
-        armature_name = self.get_selected_armature()
+        armature_name = self.get_armature_name()
         layers_list = [False] * 32
         layers_list[layer_number] = True
         bpy.ops.armature.bone_layers(layers=layers_list)
@@ -199,13 +205,12 @@ class MVBH_Scripts():
 
             bpy.ops.pose.constraint_add(type="COPY_TRANSFORMS")
             bpy.context.object.pose.bones[bone.name].constraints[
-                "Copy Transforms"].target = bpy.data.objects[self.get_selected_armature()]
+                "Copy Transforms"].target = bpy.data.objects[self.get_armature_object_name()]
             bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].subtarget = con_targets[i].name
 
             if local == True:
                 bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].target_space = "LOCAL"
                 bpy.context.object.pose.bones[bone.name].constraints["Copy Transforms"].owner_space = "LOCAL"
-
             i += 1
 
     def set_copy_rotation_constraint(self, con_bones,
@@ -218,7 +223,8 @@ class MVBH_Scripts():
             self.set_selected_bone_active()
             bpy.ops.pose.constraint_add(type="COPY_ROTATION")
             bpy.context.object.pose.bones[bone.name].constraints[
-                "Copy Rotation"].target = bpy.data.objects[self.get_selected_armature()]
+                "Copy Rotation"].target = bpy.data.objects[self.get_armature_object_name
+                                                           ()]
             bpy.context.object.pose.bones[bone.name].constraints["Copy Rotation"].subtarget = con_targets[i].name
 
             if local == True:
@@ -236,7 +242,8 @@ class MVBH_Scripts():
             self.set_selected_bone_active()
             bpy.ops.pose.constraint_add(type="COPY_LOCATION")
             bpy.context.object.pose.bones[bone.name].constraints[
-                "Copy Location"].target = bpy.data.objects[self.get_selected_armature()]
+                "Copy Location"].target = bpy.data.objects[self.get_armature_object_name
+                                                           ()]
             bpy.context.object.pose.bones[bone.name].constraints["Copy Location"].subtarget = con_targets[i].name
 
             if local == True:
@@ -254,7 +261,8 @@ class MVBH_Scripts():
             self.set_selected_bone_active()
             bpy.ops.pose.constraint_add(type="COPY_SCALE")
             bpy.context.object.pose.bones[bone.name].constraints[
-                "Copy Scale"].target = bpy.data.objects[self.get_selected_armature()]
+                "Copy Scale"].target = bpy.data.objects[self.get_armature_object_name
+                                                        ()]
             bpy.context.object.pose.bones[bone.name].constraints["Copy Scale"].subtarget = con_targets[i].name
 
             if local == True:
@@ -310,13 +318,17 @@ class MVBH_Scripts():
             bpy.ops.object.select_pattern(
                 pattern=bone.name, case_sensitive=True, extend=False)
             self.set_selected_bone_active()
-            cont_exist = bool(bpy.data.objects[self.get_selected_armature()].pose.bones[bone.name].constraints)
-            cont_num = len(bpy.data.objects[self.get_selected_armature()].pose.bones[bone.name].constraints)
+            cont_exist = bool(bpy.data.objects[self.get_armature_object_name
+                                               ()].pose.bones[bone.name].constraints)
+            cont_num = len(bpy.data.objects[self.get_armature_object_name
+                                            ()].pose.bones[bone.name].constraints)
             if cont_exist:
                 for constr in range(cont_num):
-                    cont_type = bpy.data.objects[self.get_selected_armature()].pose.bones[bone.name].constraints[0].type
+                    cont_type = bpy.data.objects[self.get_armature_object_name
+                                                 ()].pose.bones[bone.name].constraints[0].type
                     if cont_type in constr_dict:
-                        bpy.ops.constraint.delete(constraint=constr_dict[cont_type], owner='BONE')
+                        bpy.ops.constraint.delete(
+                            constraint=constr_dict[cont_type], owner='BONE')
         self.toggle_mode(editmode=True)
 
     def set_side_suffix(self, side):
@@ -369,18 +381,15 @@ class MVBH_Scripts():
     def set_selected_bone_active(self):
         """Set selected bone to active depending on the mode the viewport is in"""
         if bpy.context.mode == "POSE":
-            boneToSelect = bpy.data.objects[self.get_selected_armature(
-            )].pose.bones[self.get_selected_bone_name()].bone
+            boneToSelect = bpy.data.objects[self.get_armature_object_name()].pose.bones[self.get_selected_bone_name()].bone
             # Set as active
             bpy.context.object.data.bones.active = boneToSelect
             #Select in viewport
             boneToSelect.select = True
 
         elif bpy.context.mode == "EDIT_ARMATURE":
-            boneToSelect = bpy.data.armatures[self.get_selected_armature(
-            )].edit_bones[self.get_selected_bone_name()]
-            bpy.data.armatures[self.get_selected_armature(
-            )].edit_bones.active = boneToSelect
+            boneToSelect = bpy.data.armatures[self.get_armature_name()].edit_bones[self.get_selected_bone_name()]
+            bpy.data.armatures[self.get_armature_name()].edit_bones.active = boneToSelect
             boneToSelect.select = True
 
     def add_root_bone(self):
@@ -443,23 +452,23 @@ class MVBH_Scripts():
     def set_def_tgt_hierarchy(self):
         """Set Deform-Target bone hierarchy with all necessary parameters"""
         self.toggle_mode(posemode=True)
-        def_bones = self.select_all_bones_by_prefix(
-            bone_prefix=self.def_prefix, extend=False)
-        tgt_bones = self.select_all_bones_by_prefix(
-            bone_prefix=self.tgt_prefix, extend=False)
+        # def_bones = self.select_all_bones_by_prefix(
+        #     bone_prefix=self.def_prefix, extend=False)
+        # tgt_bones = self.select_all_bones_by_prefix(
+        #     bone_prefix=self.tgt_prefix, extend=False)
+
+        def_bones = self.get_selected_bone_group(self.def_prefix)
+        tgt_bones = self.get_selected_bone_group(self.tgt_prefix)
         self.set_copy_transforms_constraint(def_bones, tgt_bones)
         # if there's a root bone, parent def bones to root bone
-        if bpy.data.armatures[self.get_selected_armature()].bones[self.root_name]:
+        if bpy.data.armatures[self.get_armature_name()].bones[self.root_name]:
             self.toggle_mode(editmode=True)
-            self.parent_def_bones_to_root()
-
-    def parent_def_bones_to_root(self):
-        """Clear DEF bones parental relationships and parent them to root"""
-        self.select_bone_by_name(bone_name=self.root_name)
-        self.set_selected_bone_active()
-        self.select_all_bones_by_prefix(
-            bone_prefix=self.def_prefix, extend=False)
-        bpy.ops.armature.parent_set(type="OFFSET")
+            self.select_bone_by_name(bone_name=self.root_name)
+            self.set_selected_bone_active()
+            for bone in def_bones:
+                self.select_bone_by_name(bone_name=bone.name,extend=True)
+            bpy.ops.armature.parent_set(type="OFFSET")
+            
 
     def parent_selected_bones_to_root(self):
         """Parent any selected bones/bone in edit mode to root bone"""
@@ -491,4 +500,101 @@ class MVBH_Scripts():
 
     def delete_orphan_data(self):
         "Delete all orphan data"
-        bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
+        bpy.ops.outliner.orphans_purge(
+            do_local_ids=True, do_linked_ids=True, do_recursive=False)
+        bpy.ops.outliner.orphans_purge(
+            do_local_ids=True, do_linked_ids=True, do_recursive=True)
+        bpy.ops.outliner.orphans_purge(
+            do_local_ids=False, do_linked_ids=True, do_recursive=False)
+        bpy.ops.outliner.orphans_purge(
+            do_local_ids=False, do_linked_ids=True, do_recursive=True)
+        bpy.ops.outliner.orphans_purge(
+            do_local_ids=True, do_linked_ids=False, do_recursive=False)
+        bpy.ops.outliner.orphans_purge(
+            do_local_ids=True, do_linked_ids=False, do_recursive=True)
+
+    def delete_side_suffixes(self):
+        "Delete side suffixes if they correspond to the naming convention"
+        selected_bones = self.get_selected_bones()
+        for bone in selected_bones:
+            if bone.name.endswith(self.center_suffix):
+                bone.name = bone.name[:-len(self.center_suffix)]
+            elif bone.name.endswith(self.left_suffix):
+                bone.name = bone.name[:-len(self.left_suffix)]
+            elif bone.name.endswith(self.right_suffix):
+                bone.name = bone.name[:-len(self.right_suffix)]
+            else:
+                self.info.display_msg(28)
+
+    def delete_function_suffixes(self):
+        "Delete bone function suffixes if they correspond to the naming convention"
+        selected_bones = self.get_selected_bones()
+        for bone in selected_bones:
+            if self.ik_suffix in bone.name:
+                bone.name = bone.name.replace(self.ik_suffix, "")
+            elif self.fk_suffix in bone.name:
+                bone.name = bone.name.replace(self.fk_suffix, "")
+            elif self.twk_suffix in bone.name:
+                bone.name = bone.name.replace(self.twk_suffix, "")
+            elif self.swtch_suffix in bone.name:
+                bone.name = bone.name.replace(self.swtch_suffix, "")
+            elif self.pole_suffix in bone.name:
+                bone.name = bone.name.replace(self.pole_suffix, "")
+            else:
+                self.info.display_msg(29)
+
+    def remove_bone_prefix(self):
+        "Delete bone prefix if it corresponds to standard naming convention"
+        selected_bones = self.get_selected_bones()
+        for bone in selected_bones:
+            if bone.name.startswith(self.def_prefix):
+                bone.name = bone.name.replace(self.def_prefix, "")
+            elif bone.name.startswith(self.tgt_prefix):
+                bone.name = bone.name.replace(self.tgt_prefix, "")
+            elif bone.name.startswith(self.mch_prefix):
+                bone.name = bone.name.replace(self.mch_prefix, "")
+            elif bone.name.startswith(self.ctl_prefix):
+                bone.name = bone.name.replace(self.ctl_prefix, "")
+
+    def add_ik_hierarchy(self, chain_len=2):
+        "Add IK Hierarchy to bones with: MCH-prefix and IK-suffix, CTL-prefix and IK-suffix, CTL-prefix and Pole-suffix"
+        self.toggle_mode(posemode=True)
+        selected_bones = self.get_selected_bones()
+        rig_name = self.get_armature_object_name()
+        for bone in selected_bones:
+            if self.mch_prefix in bone.name and self.ik_suffix in bone.name:
+                mch_bone = bone.name
+            elif self.ctl_prefix in bone.name and self.ik_suffix in bone.name:
+                ctl_bone = bone.name
+            elif self.ctl_prefix in bone.name and self.pole_suffix in bone.name:
+                pole_bone = bone.name
+
+        for bone in selected_bones:
+            if bone.name == mch_bone:
+                self.set_selected_bone_active()
+                bpy.ops.pose.constraint_add(type='IK')
+                bpy.context.object.pose.bones[mch_bone].constraints["IK"].target = bpy.data.objects[rig_name]
+                bpy.context.object.pose.bones[mch_bone].constraints["IK"].subtarget = ctl_bone
+                bpy.context.object.pose.bones[mch_bone].constraints["IK"].pole_target = bpy.data.objects[rig_name]
+                bpy.context.object.pose.bones[mch_bone].constraints["IK"].pole_subtarget = pole_bone
+                bpy.context.object.pose.bones[mch_bone].constraints["IK"].pole_angle = -1.5708
+                bpy.context.object.pose.bones[mch_bone].constraints["IK"].chain_count = chain_len
+
+                
+            
+        
+        # #set Ik target to MCH bone
+        #     bpy.context.object.pose.bones["MCH-Bone.001-IK-L"].constraints["IK"].target = bpy.data.objects["Rig"]
+        # # set subtarget_for_IK
+        # bpy.context.object.pose.bones["MCH-Bone.001-IK-L"].constraints["IK"].subtarget = "CTL-Bone.002-IK-L"
+        # # set target for pole object
+        # bpy.context.object.pose.bones["MCH-Bone.001-IK-L"].constraints["IK"].pole_target = bpy.data.objects["Rig"]
+        # # set pole
+        # bpy.context.object.pose.bones["MCH-Bone.001-IK-L"].constraints["IK"].pole_subtarget = "CTL-Bone-POLE"
+        # # set pole angle
+        # bpy.context.object.pose.bones["MCH-Bone.001-IK-L"].constraints["IK"].pole_angle = -1.5708
+
+
+
+
+

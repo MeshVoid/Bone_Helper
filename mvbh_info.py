@@ -36,6 +36,10 @@ class MVBH_Messages():
             25: "Replaced 'Bone' to 'Thigh' in the names of the selected bones",
             26: "Replaced 'Bone' to 'Shin' in the names of the selected bones",
             27: "Added new Target bones based on the selection with appropriate properties!",
+            28: "Couldn't find any suffixes recognized by the addon on some or all selected bone/bones",
+            29: "Couldn't find any bone function siffixes recognized by the addon on some or all selected bone/bones",
+            30: "All constraints deleted on selected bones",
+            31: "Successfully assigned IK constraint chain and dependencies to the appropriate Mechanism Ik bone!"
         }
 
         self.errors = {
@@ -44,6 +48,11 @@ class MVBH_Messages():
             2: "No object is selected, therefore I cannot proceed!",
             3: "There is already a Root bone in current armature, delete it before adding a new one!",
             4: "There is already a Property bone in current armature, delete it before adding a new one!",
+            5: "No constraints found to delete on one or all of the selected bones!",
+            6: "There is no Root bone in current armature, add a Root bone before parenting!",
+            7: "There is no Root bone in current armature, add a Root bone, before making a Property bone!",
+            8: "Only 3 bones should be selected!",
+            9: "Can't make IK chain, inappropriate bones were selected, check naming convention of selected bones! Check Prefixes and Suffixes!"
 
         }
 
